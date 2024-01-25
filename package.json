@@ -1,0 +1,64 @@
+{
+  "name": "@bcgov/citz-imb-kc-express-api-docs",
+  "version": "0.0.0",
+  "description": "BCGov Express API documentation.",
+  "author": "Brady Mitchell <braden.mitchell@gov.bc.ca>",
+  "license": "Apache-2.0",
+  "main": "build/index.js",
+  "types": "build/bundle.d.ts",
+  "//": [
+    "THIS IS A COMMENT: Explanation of below scripts.",
+    "'build' will compile all src code into a bundle in build/ directory.",
+    "'build:dts' is part of 'build' and it bundles the typescipt declarations into a single bundle.d.ts file.",
+    "'clean:prebuild' is part of build and it removes directories and files before the build.",
+    "'clean:postbuild' is part of build and it removes directories and files after the build.",
+    "'pack' is used to package the code before a release."
+  ],
+  "scripts": {
+    "build": "npm run clean:prebuild && rollup -c rollup.config.mjs && npm run build:dts && npm run clean:postbuild",
+    "build:dts": "rollup -c rollupdts.config.mjs && node scripts/remove-dts-files.mjs",
+    "clean:prebuild": "rm -rf .rollup.cache build tsconfig.tsbuildinfo",
+    "clean:postbuild": "node scripts/remove-empty-dirs.mjs && rm -rf .rollup.cache tsconfig.tsbuildinfo",
+    "pack": "npm i && npm run build && npm cache clean --force && npm pack && mkdir releases && mv *.tgz ./releases/"
+  },
+  "dependencies": {
+    "dotenv": "16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.5",
+    "@rollup/plugin-commonjs": "25.0.7",
+    "@rollup/plugin-multi-entry": "6.0.1",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-typescript": "11.1.5",
+    "rollup-plugin-dts": "6.0.2",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2"
+  },
+  "keywords": [
+    "bcgov",
+    "citz",
+    "imb",
+    "keycloak",
+    "sso",
+    "css",
+    "api",
+    "oidc",
+    "single sign on",
+    "pathfinder",
+    "redhat",
+    "express",
+    "docs",
+    "swagger",
+    "npm"
+  ],
+  "files": [
+    "build/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgov/citz-imb-kc-express-api-docs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bcgov/citz-imb-kc-express-api-docs/issues"
+  }
+}
