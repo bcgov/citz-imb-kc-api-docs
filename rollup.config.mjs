@@ -12,7 +12,7 @@ export default [
         sourcemap: true,
       },
     ],
-    external: ["dotenv"],
+    external: ["express"],
     plugins: [
       resolve(),
       commonjs(),
