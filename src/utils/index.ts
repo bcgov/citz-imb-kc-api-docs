@@ -1,3 +1,3 @@
 export * from "./getTokens";
-export * from "./authURLs";
+export * from "./authUrls";
 export * from "./jwt";
