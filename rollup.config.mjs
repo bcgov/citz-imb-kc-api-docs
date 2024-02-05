@@ -13,7 +13,7 @@ export default [
         sourcemap: true,
       },
     ],
-    external: ["express"],
+    external: ["express", "ejs"],
     plugins: [
       copy({
         targets: [{ src: "src/static/*", dest: "build/static" }],
