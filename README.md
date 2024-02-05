@@ -7,6 +7,8 @@
 [![Typescript](https://img.shields.io/badge/TypeScript_5-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](Typescript)
 [![Express](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)](Express)
 
+![under-construction](https://github.com/bcgov/citz-imb-kc-express-api-docs/assets/16313579/32e3abf2-38f2-4e9f-8e09-a202cec0cab3)
+
 <br />
 
 <details>
