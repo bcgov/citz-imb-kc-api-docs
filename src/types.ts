@@ -46,10 +46,7 @@ export type Endpoint = {
   method: Method;
   protected: boolean;
   protectedBy: string[];
-  controller: {
-    name: string;
-    path: string;
-  };
+  protectedByAll: boolean;
 };
 
 export type ModuleEndpoints = {
