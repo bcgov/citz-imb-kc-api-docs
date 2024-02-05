@@ -42,7 +42,7 @@ export const generateDocs = (config: Config) => {
         route: `/${moduleName}`,
         protected: false,
         protectedBy: [],
-        protectedByAll: true,
+        protectedByAll: true, // Default value is true
       };
 
       const protectedRouteRegex =
@@ -51,28 +51,20 @@ export const generateDocs = (config: Config) => {
 
       if (protectedMatch) {
         processedModule.protected = true;
+        const roles = protectedMatch[1]?.replace(/['"\s]+/g, "").split(",");
+        processedModule.protectedBy = roles || [];
 
-        // Process roles
-        const roles = protectedMatch[1]?.replace(/['"\s]+/g, "");
-        processedModule.protectedBy = roles ? roles.split(",") : [];
-
-        // Process options parameter if present
         if (protectedMatch[2]) {
           try {
-            // Safely parse the options JSON
-            const options = JSON.parse(protectedMatch[2].replace(/'/g, '"')); // Replace single quotes with double quotes for valid JSON
-            // Set protectedByAll based on requireAllRoles
+            const options = JSON.parse(protectedMatch[2].replace(/'/g, '"'));
             if (
-              options.hasOwnProperty("requireAllRoles") &&
+              "requireAllRoles" in options &&
               options.requireAllRoles === false
             ) {
               processedModule.protectedByAll = false;
             }
           } catch (error) {
-            console.error(
-              "Error parsing options parameter in protectedRoute:",
-              error
-            );
+            console.error("Error parsing options in protectedRoute:", error);
           }
         }
       }
@@ -85,10 +77,8 @@ export const generateDocs = (config: Config) => {
 
   // Process endpoint details from modules.
   processedModules.forEach((module) => {
-    const routerFileContent = fs.readFileSync(
-      `${modulesBasePath}${module.name}/router.ts`,
-      "utf8"
-    );
+    const routerFilePath = `${modulesBasePath}${module.name}/router.ts`;
+    const routerFileContent = fs.readFileSync(routerFilePath, "utf8");
 
     // Initialize the module in endpointsByModule
     endpointsByModule[module.name] = {
@@ -96,38 +86,41 @@ export const generateDocs = (config: Config) => {
       endpoints: [],
     };
 
-    const methodRegex =
-      /router\.(get|post|patch|put|delete)\(['"]\/(.*?)['"],/g;
-    let match;
-    while ((match = methodRegex.exec(routerFileContent)) !== null) {
-      endpointsByModule[module.name].endpoints.push({
-        route: `/${match[2]}`,
-        method: match[1].toUpperCase() as Method,
-        protected: module.protected,
-        protectedBy: module.protectedBy,
+    // Extract and map controller names to file paths
+    const importRegex = /import\s+{\s*([^}]+)\s*}\s+from\s+'([^']+)'(?:;|$)/g;
+    let importMatch;
+    const imports: Record<string, string> = {};
+
+    while ((importMatch = importRegex.exec(routerFileContent)) !== null) {
+      const [fullMatch, controllerNames, path] = importMatch;
+      controllerNames.split(",").forEach((name) => {
+        imports[name.trim()] = path;
       });
     }
 
-    const chainedMethodBlockRegex =
-      /router\.route\(['"]\/(.*?)['"]\)\.([\s\S]+?)(?=\n|router|$)/g;
-    while ((match = chainedMethodBlockRegex.exec(routerFileContent)) !== null) {
-      const baseRoute = match[1];
-      const chainedMethods = match[2].match(/(get|post|patch|put|delete)\(/g);
-      if (chainedMethods) {
-        chainedMethods.forEach((method) => {
-          method = method.replace("(", "");
-          endpointsByModule[module.name].endpoints.push({
-            route: `/${baseRoute}`,
-            method: method.toUpperCase() as Method,
-            protected: module.protected,
-            protectedBy: module.protectedBy,
-          });
-        });
-      }
+    // Match methods and extract controller names
+    const methodRegex =
+      /router\.(get|post|patch|put|delete)\(['"]\/(.*?)['"],\s*(\w+)/g;
+    let match;
+    while ((match = methodRegex.exec(routerFileContent)) !== null) {
+      const [fullMatch, method, route, controllerName] = match;
+      const controllerPath = imports[controllerName]; // Map controller name to import path
+      endpointsByModule[module.name].endpoints.push({
+        route: `/${route}`,
+        method: method.toUpperCase() as Method,
+        protected: module.protected,
+        protectedBy: module.protectedBy,
+        controller: {
+          name: controllerName,
+          path: controllerPath
+            ? `${modulesBasePath}${module.name}/${controllerPath}`
+            : "",
+        },
+      });
     }
   });
 
-  // Write output to file.
+  // Write output to file
   const filePath = "src/endpoints.json";
   fs.writeFileSync(
     filePath,
