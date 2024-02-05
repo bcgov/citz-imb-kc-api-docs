@@ -75,12 +75,18 @@
       
                         <!-- Section Body -->
                         <div class="endpoint-block-details-section-container">
-                          <% if(endpoint.protected) { %>
+                          <% if(endpoints[moduleName].protected) { %>
                             <!-- Protected -->
                             <p class="authentication-section-protected">Protected</p>
                             <p class="font-small">Use of this endpoint requires authentication.</p>
-                            <% if(endpoint.protectedBy.length > 0) { %>
-                              <p class="font-small"><b>Requires</b> <span class="white-background"><%= endpoint.protectedBy.join(', ') %></span> <b>role(s).</b></p>
+                            <% if(endpoints[moduleName].protectedByAll) { %>
+                              <% if(endpoints[moduleName].protectedBy.length > 0) { %>
+                                <p class="font-small"><b>Requires</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
+                              <% } %>
+                            <% } else { %>
+                              <% if(endpoints[moduleName].protectedBy.length > 0) { %>
+                                <p class="font-small"><b>Requires one of</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
+                              <% } %>
                             <% } %>
       
                           <% } else { %>
