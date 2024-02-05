@@ -42,17 +42,39 @@ export const generateDocs = (config: Config) => {
         route: `/${moduleName}`,
         protected: false,
         protectedBy: [],
+        protectedByAll: true,
       };
 
-      // Check if the route is protected
-      const protectedRouteRegex = /protectedRoute\(\[(.*?)\]\)/;
+      const protectedRouteRegex =
+        /protectedRoute\(\s*(?:\[(.*?)\])?\s*(?:,\s*({.*?})\s*)?\)/;
       const protectedMatch = match[0].match(protectedRouteRegex);
 
       if (protectedMatch) {
         processedModule.protected = true;
-        processedModule.protectedBy = protectedMatch[1]
-          .replace(/['"\s]+/g, "")
-          .split(",");
+
+        // Process roles
+        const roles = protectedMatch[1]?.replace(/['"\s]+/g, "");
+        processedModule.protectedBy = roles ? roles.split(",") : [];
+
+        // Process options parameter if present
+        if (protectedMatch[2]) {
+          try {
+            // Safely parse the options JSON
+            const options = JSON.parse(protectedMatch[2].replace(/'/g, '"')); // Replace single quotes with double quotes for valid JSON
+            // Set protectedByAll based on requireAllRoles
+            if (
+              options.hasOwnProperty("requireAllRoles") &&
+              options.requireAllRoles === false
+            ) {
+              processedModule.protectedByAll = false;
+            }
+          } catch (error) {
+            console.error(
+              "Error parsing options parameter in protectedRoute:",
+              error
+            );
+          }
+        }
       }
 
       processedModules.push(processedModule);

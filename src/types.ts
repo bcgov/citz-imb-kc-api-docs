@@ -36,6 +36,7 @@ export type Module = {
   route: string;
   protected: boolean;
   protectedBy: string[];
+  protectedByAll: boolean;
 };
 
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
