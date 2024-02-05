@@ -33,7 +33,7 @@ export type Config = {
 
 export type Module = {
   name: string;
-  route: string;
+  description: string;
   protected: boolean;
   protectedBy: string[];
   protectedByAll: boolean;
@@ -44,11 +44,17 @@ export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 export type Endpoint = {
   route: string;
   method: Method;
-  protected: boolean;
-  protectedBy: string[];
-  protectedByAll: boolean;
+  protected?: boolean;
+  protectedBy?: string[];
+  protectedByAll?: boolean;
 };
 
-export type ModuleEndpoints = {
-  [key: string]: { description: string; endpoints: Endpoint[] };
+export type Modules = {
+  [key: string]: {
+    description: string;
+    protected: boolean;
+    protectedBy: string[];
+    protectedByAll: boolean;
+    endpoints: Endpoint[];
+  };
 };
