@@ -31,22 +31,15 @@ export type Config = {
   defaultResponses: (string | number)[][];
 };
 
-export type Module = {
-  name: string;
-  description: string;
-  protected: boolean;
-  protectedBy: string[];
-  protectedByAll: boolean;
-};
-
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 export type Endpoint = {
   route: string;
   method: Method;
-  protected?: boolean;
-  protectedBy?: string[];
-  protectedByAll?: boolean;
+  controller: {
+    name: string;
+    path: string;
+  };
 };
 
 export type Modules = {
