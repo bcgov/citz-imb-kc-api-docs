@@ -113,5 +113,3 @@ export const generateDocs = (config: Config) => {
     "utf8"
   );
 };
-
-generateDocs(config);
