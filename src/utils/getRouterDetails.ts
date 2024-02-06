@@ -39,7 +39,7 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
     // Function to determine the path for a controller name
     const getControllerPath = (controllerName: string) => {
       if (controllerName.startsWith("dataController")) {
-        return `${modulesBasePath}common/controller/controller.class.ts`;
+        return `${modulesBasePath}common/controller/controller.class`;
       } else {
         const controllerImportPath = controllerPaths[controllerName];
         return controllerImportPath
@@ -53,7 +53,7 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
 
     // Syntax: router.<method>(...)
     const methodRegex =
-      /router\.(get|post|patch|put|delete)\(['"]([^'"]+)['"],\s*(\w+)/g;
+      /router\.(get|post|patch|put|delete)\(['"]([^'"]+)['"],\s*([\w.]+)/g;
     let match;
     while ((match = methodRegex.exec(routerFileContent)) !== null) {
       const [_, httpMethod, routePath, controllerName] = match;
@@ -69,7 +69,7 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
 
     // Syntax: router.route(...).<method>(...)
     const routeRegex =
-      /router\.route\(['"]([^'"]+)['"]\)\.([\s\S]+?)(?=\n|router|$)/g;
+      /router\.route\(['"]([^'"]+)['"]\)\.([\s\S]+?)(?=\n\s*router|$)/g;
     while ((match = routeRegex.exec(routerFileContent)) !== null) {
       const baseRoute = match[1];
       const methodBlock = match[2];
