@@ -3,7 +3,9 @@ import { Method, Modules } from "../types";
 
 /**
  * Gets details from the router for each module,
- * including endpoints, their methods, and associated controllers.
+ * including endpoints, their methods, and associated controllers
+ * with dynamic paths based on controller names,
+ * with special handling for 'dataController'.
  */
 export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
   Object.keys(modules).forEach((module) => {
@@ -34,27 +36,35 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
       });
     }
 
+    // Function to determine the path for a controller name
+    const getControllerPath = (controllerName: string) => {
+      if (controllerName.startsWith("dataController")) {
+        return `${modulesBasePath}common/controller/controller.class.ts`;
+      } else {
+        const controllerImportPath = controllerPaths[controllerName];
+        return controllerImportPath
+          ? `${modulesBasePath}${module}/${controllerImportPath.replace(
+              /^\.\//,
+              ""
+            )}`
+          : "";
+      }
+    };
+
     // Syntax: router.<method>(...)
     const methodRegex =
       /router\.(get|post|patch|put|delete)\(['"]([^'"]+)['"],\s*(\w+)/g;
     let match;
     while ((match = methodRegex.exec(routerFileContent)) !== null) {
       const [_, httpMethod, routePath, controllerName] = match;
-      const controllerImportPath = controllerPaths[controllerName];
-
-      if (controllerImportPath) {
-        modules[module].endpoints.push({
-          route: routePath,
-          method: httpMethod.toUpperCase() as Method,
-          controller: {
-            name: controllerName,
-            path: `${modulesBasePath}${module}/${controllerImportPath.replace(
-              /^\.\//,
-              ""
-            )}`,
-          },
-        });
-      }
+      modules[module].endpoints.push({
+        route: routePath,
+        method: httpMethod.toUpperCase() as Method,
+        controller: {
+          name: controllerName,
+          path: getControllerPath(controllerName),
+        },
+      });
     }
 
     // Syntax: router.route(...).<method>(...)
@@ -67,21 +77,14 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
       let methodMatch;
       while ((methodMatch = methodMatchRegex.exec(methodBlock)) !== null) {
         const [_, httpMethod, controllerName] = methodMatch;
-        const controllerImportPath = controllerPaths[controllerName];
-
-        if (controllerImportPath) {
-          modules[module].endpoints.push({
-            route: baseRoute,
-            method: httpMethod.toUpperCase() as Method,
-            controller: {
-              name: controllerName,
-              path: `${modulesBasePath}${module}/${controllerImportPath.replace(
-                /^\.\//,
-                ""
-              )}`,
-            },
-          });
-        }
+        modules[module].endpoints.push({
+          route: baseRoute,
+          method: httpMethod.toUpperCase() as Method,
+          controller: {
+            name: controllerName,
+            path: getControllerPath(controllerName),
+          },
+        });
       }
     }
   });
