@@ -2,80 +2,86 @@ import fs from "fs";
 import { Method, Modules } from "../types";
 
 /**
- * Gets details from the router for each module.
- * Details include endpoints, their methods, and associated controllers.
+ * Gets details from the router for each module,
+ * including endpoints, their methods, and associated controllers.
  */
 export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
-  // Process endpoint details from modules.
   Object.keys(modules).forEach((module) => {
     const routerFileContent = fs.readFileSync(
       `${modulesBasePath}${module}/router.ts`,
       "utf8"
     );
 
-    // Parse import statements to map controller names to their paths
-    const importRegex = /import\s+{\s*(.*?)\s*}\s*from\s*['"](.*?)['"]/g;
-    let importsMatch;
+    // Initialize a map to hold controller names and their import paths
     const controllerPaths: { [key: string]: string } = {};
-    while ((importsMatch = importRegex.exec(routerFileContent)) !== null) {
-      const [_, controllerNames, importPath] = importsMatch;
-      controllerNames.split(",").forEach((name) => {
-        controllerPaths[name.trim()] = importPath;
+
+    // Extract all import statements
+    const importRegex = /import\s+{([^}]+)}\s+from\s+['"](.+?)['"]/g;
+    let importMatch;
+    while ((importMatch = importRegex.exec(routerFileContent)) !== null) {
+      const importedItems = importMatch[1]
+        .split(",")
+        .map((item) => item.trim());
+      const importPath = importMatch[2];
+      importedItems.forEach((item) => {
+        // Handle alias imports, e.g., { originalName as aliasName }
+        const aliasMatch = item.match(/(\w+)\s+as\s+(\w+)/);
+        if (aliasMatch) {
+          controllerPaths[aliasMatch[2]] = importPath;
+        } else {
+          controllerPaths[item] = importPath;
+        }
       });
     }
 
-    // Match router.<method> syntax in router content and capture the controller
+    // Syntax: router.<method>(...)
     const methodRegex =
-      /router\.(get|post|patch|put|delete)\(['"]\/(.*?)['"],\s*(.*?)\)/g;
+      /router\.(get|post|patch|put|delete)\(['"]([^'"]+)['"],\s*(\w+)/g;
     let match;
     while ((match = methodRegex.exec(routerFileContent)) !== null) {
-      const controllerName = match[3].trim();
-      const path = controllerName.startsWith("dataController")
-        ? `${modulesBasePath}common/controller/controller.class.ts`
-        : `${modulesBasePath}${module}/${
-            controllerPaths[controllerName] || "controller"
-          }`;
+      const [_, httpMethod, routePath, controllerName] = match;
+      const controllerImportPath = controllerPaths[controllerName];
 
-      modules[module].endpoints.push({
-        route: `/${match[2]}`,
-        method: match[1].toUpperCase() as Method,
-        controller: {
-          name: controllerName,
-          path: path.replace("./", ""), // Remove './' to avoid relative path issues
-        },
-      });
+      if (controllerImportPath) {
+        modules[module].endpoints.push({
+          route: routePath,
+          method: httpMethod.toUpperCase() as Method,
+          controller: {
+            name: controllerName,
+            path: `${modulesBasePath}${module}/${controllerImportPath.replace(
+              /^\.\//,
+              ""
+            )}`,
+          },
+        });
+      }
     }
 
-    // Match router.route().<method> syntax in router content and capture the controller
-    const chainedMethodBlockRegex =
-      /router\.route\(['"]\/(.*?)['"]\)\.([\s\S]+?)(?=\n|router|$)/g;
-    while ((match = chainedMethodBlockRegex.exec(routerFileContent)) !== null) {
+    // Syntax: router.route(...).<method>(...)
+    const routeRegex =
+      /router\.route\(['"]([^'"]+)['"]\)\.([\s\S]+?)(?=\n|router|$)/g;
+    while ((match = routeRegex.exec(routerFileContent)) !== null) {
       const baseRoute = match[1];
-      const chainedMethods = match[2].match(
-        /(get|post|patch|put|delete)\(\s*(.*?)(,|\))/g
-      );
-      if (chainedMethods) {
-        chainedMethods.forEach((method) => {
-          const methodParts =
-            /(get|post|patch|put|delete)\(\s*(.*?)(,|\))/g.exec(method);
-          if (methodParts) {
-            const controllerName = methodParts[2].trim();
-            const path = controllerName.startsWith("dataController")
-              ? `${modulesBasePath}common/controller/controller.class.ts`
-              : `${modulesBasePath}${module}/${
-                  controllerPaths[controllerName] || "controller"
-                }`;
+      const methodBlock = match[2];
+      const methodMatchRegex = /(get|post|patch|put|delete)\(\s*(\w+)/g;
+      let methodMatch;
+      while ((methodMatch = methodMatchRegex.exec(methodBlock)) !== null) {
+        const [_, httpMethod, controllerName] = methodMatch;
+        const controllerImportPath = controllerPaths[controllerName];
 
-            modules[module].endpoints.push({
-              route: `/${baseRoute}`,
-              method: methodParts[1].toUpperCase() as Method,
-              controller: {
-                name: controllerName,
-                path: path.replace("./", ""), // Remove './' to avoid relative path issues
-              },
-            });
-          }
-        });
+        if (controllerImportPath) {
+          modules[module].endpoints.push({
+            route: baseRoute,
+            method: httpMethod.toUpperCase() as Method,
+            controller: {
+              name: controllerName,
+              path: `${modulesBasePath}${module}/${controllerImportPath.replace(
+                /^\.\//,
+                ""
+              )}`,
+            },
+          });
+        }
       }
     }
   });
