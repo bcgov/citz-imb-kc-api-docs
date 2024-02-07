@@ -7,22 +7,24 @@ export const getcontrollerDetails = (modules: Modules) => {
   Object.keys(modules).forEach((module) => {
     // For each endpoint in a module
     modules[module].endpoints.forEach((endpoint, index) => {
-      const controllerFileContent = fs.readFileSync(
-        endpoint.controller.path,
-        "utf8"
-      );
+      if (endpoint.controller.path !== "") {
+        const controllerFileContent = fs.readFileSync(
+          endpoint.controller.path,
+          "utf8"
+        );
 
-      // Extract function code from controller file content
-      const functionCode = extractFunctionCode(
-        controllerFileContent,
-        endpoint.controller.name
-      );
+        // Extract function code from controller file content
+        const functionCode = extractFunctionCode(
+          controllerFileContent,
+          endpoint.controller.name
+        );
 
-      // Get query params
-      const queryParams = parseQueryParams(functionCode);
+        // Get query params
+        const queryParams = parseQueryParams(functionCode);
 
-      // Set query property on controller data
-      modules[module].endpoints[index].controller.query = queryParams;
+        // Set query property on controller data
+        modules[module].endpoints[index].controller.query = queryParams;
+      }
     });
   });
 

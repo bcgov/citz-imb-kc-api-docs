@@ -39,14 +39,14 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
     // Function to determine the path for a controller name
     const getControllerPath = (controllerName: string) => {
       if (controllerName.startsWith("dataController")) {
-        return `${modulesBasePath}common/controller/controller.class`;
+        return `${modulesBasePath}common/controller/controller.class.ts`;
       } else {
         const controllerImportPath = controllerPaths[controllerName];
         return controllerImportPath
           ? `${modulesBasePath}${module}/${controllerImportPath.replace(
               /^\.\//,
               ""
-            )}`
+            )}.ts`
           : "";
       }
     };
