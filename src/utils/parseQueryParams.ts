@@ -9,19 +9,21 @@ export const parseQueryParams = (
   const directUsagePattern = /req\.query\.(\w+)/g;
   let match;
   while ((match = directUsagePattern.exec(functionString)) !== null) {
-    queryParams[match[1]] = { required: true, type: "string" }; // Add the property to the object
+    // Ensure that the matched query param is not part of a variable declaration
+    if (!functionString.substring(0, match.index).trim().endsWith("const")) {
+      queryParams[match[1]] = { required: true, type: "string" }; // Add the property to the object
+    }
   }
 
   // Match destructured usage of req.query
   const destructuredUsagePattern = /\{([^}]+)\}\s*=\s*req\.query/g;
   while ((match = destructuredUsagePattern.exec(functionString)) !== null) {
-    // Split the matched string by commas and clean up any whitespace or destructuring defaults
     const params = match[1]
       .split(",")
       .map((param) => param.split("=")[0].trim());
-    params.forEach((param) => {
-      queryParams[param] = { required: true, type: "string" }; // Add each param to the object
-    });
+    params.forEach(
+      (param) => (queryParams[param] = { required: true, type: "string" })
+    );
   }
 
   // Match usage of getQuery function with destructuring
