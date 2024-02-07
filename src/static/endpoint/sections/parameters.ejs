@@ -6,15 +6,36 @@
 
   <!-- Section Body -->
   <div class="endpoint-block-details-section-container">
-    <!-- Check if route has parameters -->
-    <% var routeParams = endpoint.route.match(/:[a-zA-Z]+/g); %>
-    <% if (routeParams) { %>
-        <% routeParams.forEach(function(param) { %>
+    <!-- Path Params -->
+    <% var routePathParams = endpoint.route.match(/:[a-zA-Z]+/g); %>
+    <% if (routePathParams) { %>
+        <% routePathParams.forEach(function(param) { %>
             <p class="param-text font-small">(path param) <span class="required-param">* required</span></p>
             <label for="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>"><%= param.substring(1) %>:</label>
             <input class="param-input" type="text" id="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>" placeholder="<%= param.substring(1) %>">
             <br /><br />
         <% }); %>
+    <% } %>
+
+    <!-- Query Params -->
+    <% var routeQueryParams = endpoint.controller.query; %>
+    <% if (routeQueryParams) { %>
+      <% Object.entries(routeQueryParams).forEach(function([paramName, paramDetails]) { %>
+        <!-- Required -->
+        <% if(paramDetails.required) { %>
+          <p class="param-text font-small">(query param) <span class="required-param">* required</span></p>
+        <% } else { %>
+          <p class="param-text font-small">(query param) <span class="required-param">optional</span></p>
+        <% } %>
+
+        <!-- Type -->
+        <p class="param-text font-small"><%= paramDetails.type %></p>
+
+        <!-- Input -->
+        <label for="<%= 'query-input-' + moduleName + '-' + index + '-' + paramName %>"><%= paramName %>:
+        <input class="param-input" type="text" id="<%= 'query-input-' + moduleName + '-' + index + '-' + paramName %>" placeholder="<%= paramName %>">
+        <br /><br />
+      <% }); %>
     <% } %>
 
     <button class="execute-button endpoint-method-block-<%= endpoint.method %>" id="execute-btn-<%= moduleName %>-<%= index %>">
