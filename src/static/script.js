@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
           paramDetails,
         ]) {
           var inputElement = document.getElementById(
-            "query-" + module + "-" + endpointIndex + "-" + paramName
+            "query-input-" + module + "-" + endpointIndex + "-" + paramName
           );
           if (inputElement) {
             if (paramDetails.required && !inputElement.value) {
