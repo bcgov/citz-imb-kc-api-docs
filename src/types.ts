@@ -23,10 +23,7 @@ export type IdentityProvider =
   | GithubIdentityProvider;
 
 export type CustomSchemaConfig = {
-  [pattern: string]: {
-    required: boolean;
-    type: "string" | "number" | "boolean";
-  };
+  [pattern: string]: QueryParamProperties;
 };
 
 export type Config = {

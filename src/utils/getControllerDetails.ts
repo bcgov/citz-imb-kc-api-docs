@@ -28,8 +28,7 @@ export const getcontrollerDetails = (
         const query = parseQueryParams(
           controllerFileContent,
           functionCode,
-          module,
-          modulesBasePath
+          modules[module].endpoints[index].controller.path
         );
 
         // Set query properties on controller data

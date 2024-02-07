@@ -1,10 +1,10 @@
+import path from "path";
 import { QueryParamProperties } from "../types";
 
 export const parseQueryParams = (
   controllerFileContent: string,
   functionString: string,
-  module: string,
-  modulesBasePath: string
+  controllerPath: string
 ): {
   params: Record<string, QueryParamProperties>;
   schemaName?: string;
@@ -36,10 +36,10 @@ export const parseQueryParams = (
   const getSchemaPath = (schemaName: string) => {
     const schemaImportPath = schemaPaths[schemaName];
     return schemaImportPath
-      ? `${modulesBasePath}${module}/${schemaImportPath.replace(
-          /^\.\//,
-          ""
-        )}.ts`
+      ? path.resolve(
+          path.dirname(controllerPath),
+          `${schemaImportPath.replace(/^\.\//, "")}.ts`
+        )
       : "";
   };
 
