@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var accessToken = getCookie("access_token");
       var headers = {};
 
-      if (endpoint.protected && accessToken) {
+      if (module.protected && accessToken) {
         headers["Authorization"] = "Bearer " + accessToken;
       }
 
