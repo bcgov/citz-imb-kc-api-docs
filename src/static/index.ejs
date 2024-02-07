@@ -23,13 +23,13 @@
                     <div class="endpoint-block-summary">
 
                         <!-- Summary Title -->
-                        <%- include('./endpoint/summary.ejs'); %>
+                        <%- include('./endpoint/summary.ejs', { moduleName, endpoint }); %>
 
                         <!-- Copy to Clipboard Button-->
-                        <%- include('./endpoint/copyToClipboardButton.ejs'); %>
+                        <%- include('./endpoint/copyToClipboardButton.ejs', { moduleName, endpoint, index }); %>
 
                         <!-- Expansion Button -->
-                        <%- include('./endpoint/expansionButton.ejs'); %>
+                        <%- include('./endpoint/expansionButton.ejs', { moduleName, endpoint, index }); %>
 
                     </div>
 
@@ -37,13 +37,13 @@
                     <div class="endpoint-block-details" id="details-<%= moduleName %><%= index %>">
 
                       <!-- Authentication Section -->
-                      <%- include('./endpoint/sections/authentication.ejs'); %>
+                      <%- include('./endpoint/sections/authentication.ejs', { moduleName, endpoints }); %>
       
                       <!-- Parameters Section -->
-                      <%- include('./endpoint/sections/parameters.ejs'); %>
+                      <%- include('./endpoint/sections/parameters.ejs', { moduleName, endpoint, index }); %>
       
                       <!-- Responses Section -->
-                      <%- include('./endpoint/sections/responses.ejs'); %>
+                      <%- include('./endpoint/sections/responses.ejs', { moduleName, endpoint, index }); %>
       
                     </div>
 
