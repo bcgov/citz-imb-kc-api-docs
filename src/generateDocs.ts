@@ -25,7 +25,10 @@ export const generateDocs = (config: Config) => {
   );
 
   // Add controller details
-  const controllerDetails: Modules = getcontrollerDetails(routerDetails);
+  const controllerDetails: Modules = getcontrollerDetails(
+    routerDetails,
+    modulesBasePath
+  );
 
   // Write output to file.
   const filePath = "src/endpoints.json";

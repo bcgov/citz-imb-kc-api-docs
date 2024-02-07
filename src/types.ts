@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 // The token and user properties are not a part of the Request object by default.
 declare global {
   namespace Express {
@@ -47,6 +49,9 @@ export type Endpoint = {
     query?: {
       [param: string]: QueryParamProperties;
     };
+    querySchemaName?: string;
+    querySchemaPath?: string;
+    querySchema?: z.ZodSchema<unknown>;
   };
 };
 
