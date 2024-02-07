@@ -2,9 +2,9 @@ export const parseFunctionDescription = (
   fileContent: string,
   functionName: string
 ) => {
-  // Pattern captures the entire comment block immediately preceding the function declaration
+  // Pattern to match a block comment above the function declaration
   const pattern = new RegExp(
-    `\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*export\\s+const\\s+${functionName}\\s*=`,
+    `\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
     "gm"
   );
 
@@ -17,9 +17,9 @@ export const parseFunctionDescription = (
     // Split the comment block into lines and trim each line
     const lines = lastMatch.split("\n").map((line) => line.trim());
 
-    // Find the first non-empty line that does not start with '*' or '@'
+    // Find the first descriptive line of the comment, ignoring lines with only '*', '@' annotations, or empty lines
     const descriptionLine = lines.find(
-      (line) => line && !line.startsWith("*") && !line.startsWith("@")
+      (line) => line && !line.match(/^(\*|@|\s*$)/)
     );
 
     if (descriptionLine) {
