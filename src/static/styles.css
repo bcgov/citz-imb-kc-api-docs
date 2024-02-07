@@ -63,6 +63,10 @@ header {
 .module-section {
   margin-bottom: 45px;
 }
+.endpoint-description {
+  margin: 0;
+  font-size: 0.9em;
+}
 .endpoint-block {
   border: 1px solid #000;
   border-radius: 4px;

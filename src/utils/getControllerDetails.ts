@@ -3,6 +3,7 @@ import { CustomSchemaConfig, Modules } from "../types";
 import { extractFunctionCode } from "./extractFunctionCode";
 import { parseQueryParams } from "./parseQueryParams";
 import { parseSchema } from "./parseSchema";
+import { parseFunctionDescription } from "./parseFunctionDescription";
 
 export const getcontrollerDetails = (
   modules: Modules,
@@ -17,6 +18,13 @@ export const getcontrollerDetails = (
           endpoint.controller.path,
           "utf8"
         );
+
+        // Extract description if provided
+        const description = parseFunctionDescription(
+          controllerFileContent,
+          endpoint.controller.name
+        );
+        modules[module].endpoints[index].description = description;
 
         // Extract function code from controller file content
         const functionCode = extractFunctionCode(

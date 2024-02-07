@@ -48,6 +48,7 @@ export type QueryParamProperties = {
 export type Endpoint = {
   route: string;
   method: Method;
+  description?: string;
   controller: {
     name: string;
     path: string;
