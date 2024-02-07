@@ -22,6 +22,13 @@ export type IdentityProvider =
   | BceidIdentityProvider
   | GithubIdentityProvider;
 
+export type CustomSchemaConfig = {
+  [pattern: string]: {
+    required: boolean;
+    type: "string" | "number" | "boolean";
+  };
+};
+
 export type Config = {
   expressFilePath: string;
   modulesBasePath: string;
@@ -30,6 +37,7 @@ export type Config = {
       description: string;
     };
   };
+  customSchemas?: CustomSchemaConfig;
   defaultResponses: (string | number)[][];
 };
 
@@ -49,8 +57,6 @@ export type Endpoint = {
     query?: {
       [param: string]: QueryParamProperties;
     };
-    querySchemaName?: string;
-    querySchemaPath?: string;
     querySchema?: z.ZodSchema<unknown>;
   };
 };
