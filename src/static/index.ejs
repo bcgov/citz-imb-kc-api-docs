@@ -23,43 +23,13 @@
                     <div class="endpoint-block-summary">
 
                         <!-- Summary Title -->
-                        <div class="endpoint-block-summary-title">
-                            <div class="endpoint-method-block endpoint-method-block-<%= endpoint.method %>"><%= endpoint.method %></div>
-                            <div class="endpoint-summary-path">
-                                <% if(endpoint.route === '/') { %>
-                                    <span>/<%= moduleName %></span>
-                                <% } else { %>
-                                    <span>/<%= moduleName %><%= endpoint.route %></span>
-                                <% } %>
-                            </div>
-                        </div>
+                        <%- include('./endpoint/summary.ejs'); %>
 
                         <!-- Copy to Clipboard Button-->
-                        <% if(endpoint.route === '/') { %>
-                          <button class="copy-button" onclick="copyToClipboard('/<%= moduleName %>')">
-                            <svg xmlns="http://www.w3.org/2000/svg" stroke="#fff" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                          </button>
-                        <% } else { %>
-                          <button class="copy-button" onclick="copyToClipboard('/<%= moduleName %><%= endpoint.route %>')">
-                            <svg xmlns="http://www.w3.org/2000/svg" stroke="#fff" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                          </button>
-                        <% } %>
+                        <%- include('./endpoint/copyToClipboardButton.ejs'); %>
 
                         <!-- Expansion Button -->
-                        <button class="endpoint-inner-expand-arrow" aria-expanded="false" tabindex="-1" data-index="<%= moduleName %><%= index %>">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="arrow-svg" width="20" height="20" aria-hidden="true" focusable="false">
-                            <path d="M 17.418 14.908 C 17.69 15.176 18.127 15.176 18.397 14.908 C 18.667 14.64 18.668 14.207 18.397 13.939 L 10.489 6.109 C 10.219 5.841 9.782 5.841 9.51 6.109 L 1.602 13.939 C 1.332 14.207 1.332 14.64 1.602 14.908 C 1.873 15.176 2.311 15.176 2.581 14.908 L 10 7.767 L 17.418 14.908 Z"></path>
-                          </svg>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="arrow-svg" width="20" height="20" aria-hidden="true" focusable="false">
-                            <path d="M17.418 6.109c.272-.268.709-.268.979 0s.271.701 0 .969l-7.908 7.83c-.27.268-.707.268-.979 0l-7.908-7.83c-.27-.268-.27-.701 0-.969.271-.268.709-.268.979 0L10 13.25l7.418-7.141z"></path>
-                          </svg>
-                        </button>
+                        <%- include('./endpoint/expansionButton.ejs'); %>
 
                     </div>
 
@@ -67,82 +37,13 @@
                     <div class="endpoint-block-details" id="details-<%= moduleName %><%= index %>">
 
                       <!-- Authentication Section -->
-                      <div class="endpoint-block-details-section">
-                        <!-- Section Header -->
-                        <div class="endpoint-block-details-section-header">
-                          <h4>Authentication</h4>
-                        </div>
-      
-                        <!-- Section Body -->
-                        <div class="endpoint-block-details-section-container">
-                          <% if(endpoints[moduleName].protected) { %>
-                            <!-- Protected -->
-                            <p class="authentication-section-protected">Protected</p>
-                            <p class="font-small">Use of this endpoint requires authentication.</p>
-                            <% if(endpoints[moduleName].protectedByAll) { %>
-                              <% if(endpoints[moduleName].protectedBy.length > 0) { %>
-                                <p class="font-small"><b>Requires</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
-                              <% } %>
-                            <% } else { %>
-                              <% if(endpoints[moduleName].protectedBy.length > 0) { %>
-                                <p class="font-small"><b>Requires one of</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
-                              <% } %>
-                            <% } %>
-      
-                          <% } else { %>
-                            <!-- Public -->
-                            <p class="authentication-section-public">Public</p>
-                            <p class="font-small">Use of this endpoint does <b>NOT</b> require authentication.</p>
-      
-                          <% } %>
-                        </div>
-                      </div>
+                      <%- include('./endpoint/sections/authentication.ejs'); %>
       
                       <!-- Parameters Section -->
-                      <div class="endpoint-block-details-section">
-                        <!-- Section Header -->
-                        <div class="endpoint-block-details-section-header">
-                          <h4>Parameters</h4>
-                        </div>
-      
-                        <!-- Section Body -->
-                        <div class="endpoint-block-details-section-container">
-                          <!-- Check if route has parameters -->
-                          <% var routeParams = endpoint.route.match(/:[a-zA-Z]+/g); %>
-                          <% if (routeParams) { %>
-                              <% routeParams.forEach(function(param) { %>
-                                  <p class="param-text font-small">(path param) <span class="required-param">* required</span></p>
-                                  <label for="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>"><%= param.substring(1) %>:</label>
-                                  <input class="param-input" type="text" id="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>" placeholder="<%= param.substring(1) %>">
-                                  <br /><br />
-                              <% }); %>
-                          <% } %>
-
-                          <button class="execute-button endpoint-method-block-<%= endpoint.method %>" id="execute-btn-<%= moduleName %>-<%= index %>">
-                            Execute
-                          </button>
-                        </div>
-                      </div>
+                      <%- include('./endpoint/sections/parameters.ejs'); %>
       
                       <!-- Responses Section -->
-                      <div class="endpoint-block-details-section">
-                        <!-- Section Header -->
-                        <div class="endpoint-block-details-section-header">
-                          <h4>Responses</h4>
-                        </div>
-      
-                        <!-- Section Body -->
-                        <div class="endpoint-block-details-section-container">
-                          <div class="execution-response" style="display: none;" id="execute-response-<%= moduleName %>-<%= index %>">
-                            <h4 class="font-small" style="margin-top: 0;">Response</h4>
-                            <p class="font-small">Status Code: <b class="execute-response-status-code" id="execute-response-status-code-<%= moduleName %>-<%= index %>"></b></p>
-                            <p class="font-small">Response Body:</p>
-<pre class="execution-response-body">
-<code id="execute-response-body-code-<%= moduleName %>-<%= index %>" class="language-json" style="white-space: pre;"></code>
-</pre>
-                          </div>
-                        </div>
-                      </div>
+                      <%- include('./endpoint/sections/responses.ejs'); %>
       
                     </div>
 

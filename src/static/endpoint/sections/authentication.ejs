@@ -1,0 +1,30 @@
+<div class="endpoint-block-details-section">
+  <!-- Section Header -->
+  <div class="endpoint-block-details-section-header">
+    <h4>Authentication</h4>
+  </div>
+
+  <!-- Section Body -->
+  <div class="endpoint-block-details-section-container">
+    <% if(endpoints[moduleName].protected) { %>
+      <!-- Protected -->
+      <p class="authentication-section-protected">Protected</p>
+      <p class="font-small">Use of this endpoint requires authentication.</p>
+      <% if(endpoints[moduleName].protectedByAll) { %>
+        <% if(endpoints[moduleName].protectedBy.length > 0) { %>
+          <p class="font-small"><b>Requires</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
+        <% } %>
+      <% } else { %>
+        <% if(endpoints[moduleName].protectedBy.length > 0) { %>
+          <p class="font-small"><b>Requires one of</b> <span class="white-background"><%= endpoints[moduleName].protectedBy.join(', ') %></span> <b>role(s).</b></p>
+        <% } %>
+      <% } %>
+
+    <% } else { %>
+      <!-- Public -->
+      <p class="authentication-section-public">Public</p>
+      <p class="font-small">Use of this endpoint does <b>NOT</b> require authentication.</p>
+
+    <% } %>
+  </div>
+</div>

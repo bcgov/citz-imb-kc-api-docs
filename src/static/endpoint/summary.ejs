@@ -1,0 +1,10 @@
+<div class="endpoint-block-summary-title">
+  <div class="endpoint-method-block endpoint-method-block-<%= endpoint.method %>"><%= endpoint.method %></div>
+  <div class="endpoint-summary-path">
+      <% if(endpoint.route === '/') { %>
+          <span>/<%= moduleName %></span>
+      <% } else { %>
+          <span>/<%= moduleName %><%= endpoint.route %></span>
+      <% } %>
+  </div>
+</div>

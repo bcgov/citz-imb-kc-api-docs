@@ -1,0 +1,24 @@
+<div class="endpoint-block-details-section">
+  <!-- Section Header -->
+  <div class="endpoint-block-details-section-header">
+    <h4>Parameters</h4>
+  </div>
+
+  <!-- Section Body -->
+  <div class="endpoint-block-details-section-container">
+    <!-- Check if route has parameters -->
+    <% var routeParams = endpoint.route.match(/:[a-zA-Z]+/g); %>
+    <% if (routeParams) { %>
+        <% routeParams.forEach(function(param) { %>
+            <p class="param-text font-small">(path param) <span class="required-param">* required</span></p>
+            <label for="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>"><%= param.substring(1) %>:</label>
+            <input class="param-input" type="text" id="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>" placeholder="<%= param.substring(1) %>">
+            <br /><br />
+        <% }); %>
+    <% } %>
+
+    <button class="execute-button endpoint-method-block-<%= endpoint.method %>" id="execute-btn-<%= moduleName %>-<%= index %>">
+      Execute
+    </button>
+  </div>
+</div>
