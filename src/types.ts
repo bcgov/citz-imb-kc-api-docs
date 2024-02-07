@@ -33,12 +33,20 @@ export type Config = {
 
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
+export type QueryParamProperties = {
+  required: boolean;
+  type: "string" | "number" | "boolean";
+};
+
 export type Endpoint = {
   route: string;
   method: Method;
   controller: {
     name: string;
     path: string;
+    query?: {
+      [param: string]: QueryParamProperties;
+    };
   };
 };
 

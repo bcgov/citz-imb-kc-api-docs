@@ -1,6 +1,10 @@
 import fs from "fs";
 import { Config, Modules } from "./types";
-import { getModuleDetails, getRouterDetails } from "./utils";
+import {
+  getModuleDetails,
+  getRouterDetails,
+  getcontrollerDetails,
+} from "./utils";
 
 export const generateDocs = (config: Config) => {
   const { expressFilePath, modulesBasePath, modules } = config;
@@ -20,7 +24,14 @@ export const generateDocs = (config: Config) => {
     modulesBasePath
   );
 
+  // Add controller details
+  const controllerDetails: Modules = getcontrollerDetails(routerDetails);
+
   // Write output to file.
   const filePath = "src/endpoints.json";
-  fs.writeFileSync(filePath, JSON.stringify(routerDetails, null, 2), "utf8");
+  fs.writeFileSync(
+    filePath,
+    JSON.stringify(controllerDetails, null, 2),
+    "utf8"
+  );
 };
