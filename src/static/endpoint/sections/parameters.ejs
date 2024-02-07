@@ -21,15 +21,12 @@
     <% var routeQueryParams = endpoint.controller.query; %>
     <% if (routeQueryParams) { %>
       <% Object.entries(routeQueryParams).forEach(function([paramName, paramDetails]) { %>
-        <!-- Required -->
+        <!-- Summary: Required and Type -->
         <% if(paramDetails.required) { %>
-          <p class="param-text font-small">(query param) <span class="required-param">* required</span></p>
+          <p class="param-text font-small">(query param) <%= paramDetails.type %> <span class="required-param">* required</span></p>
         <% } else { %>
-          <p class="param-text font-small">(query param) <span class="required-param">optional</span></p>
+          <p class="param-text font-small">(query param) <%= paramDetails.type %> <span class="required-param">optional</span></p>
         <% } %>
-
-        <!-- Type -->
-        <p class="param-text font-small"><%= paramDetails.type %></p>
 
         <!-- Input -->
         <label for="<%= 'query-input-' + moduleName + '-' + index + '-' + paramName %>"><%= paramName %>:

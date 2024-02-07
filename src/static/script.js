@@ -57,9 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
         headers["Authorization"] = "Bearer " + accessToken;
       }
 
-      // Replace route parameters with user inputs and check for emptiness
-      var routeParams = endpoint.route.match(/:[a-zA-Z]+/g);
+      // Handle route and query parameters
       var allParamsFilled = true;
+      var queryString = "";
+
+      // Replace route parameters with user inputs and check for required params
+      var routeParams = endpoint.route.match(/:[a-zA-Z]+/g);
       if (routeParams) {
         routeParams.forEach(function (param) {
           var inputElement = document.getElementById(
@@ -68,14 +71,46 @@ document.addEventListener("DOMContentLoaded", function () {
           if (inputElement && inputElement.value) {
             route = route.replace(param, inputElement.value);
           } else {
-            allParamsFilled = false;
+            allParamsFilled = false; // Mark as incomplete if a required route param is missing
           }
         });
       }
 
+      // Handle query parameters
+      var queryParams = endpoint.controller.query;
+      if (queryParams) {
+        var queryParts = [];
+        Object.entries(queryParams).forEach(function ([
+          paramName,
+          paramDetails,
+        ]) {
+          var inputElement = document.getElementById(
+            "query-" + module + "-" + endpointIndex + "-" + paramName
+          );
+          if (inputElement) {
+            if (paramDetails.required && !inputElement.value) {
+              allParamsFilled = false; // Mark as incomplete if a required query param is missing
+            } else if (inputElement.value) {
+              queryParts.push(
+                encodeURIComponent(paramName) +
+                  "=" +
+                  encodeURIComponent(inputElement.value)
+              );
+            }
+          }
+        });
+        if (queryParts.length > 0) {
+          queryString = "?" + queryParts.join("&");
+        }
+      }
+
+      // Append query string to route
+      route += queryString;
+
       if (!allParamsFilled) {
         clearInterval(loadingIntervalId);
         button.textContent = originalText; // Reset button text.
+        alert("Please fill in all required parameters.");
         return;
       }
 
