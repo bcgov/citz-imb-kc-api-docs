@@ -1,5 +1,9 @@
 body {
+  margin: 0;
+}
+.page-body {
   font-family: Arial, sans-serif;
+  margin: 8px;
 }
 header {
   display: flex;

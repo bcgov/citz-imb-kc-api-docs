@@ -7,7 +7,18 @@
 [![Typescript](https://img.shields.io/badge/TypeScript_5-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](Typescript)
 [![Express](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)](Express)
 
-![under-construction](https://github.com/bcgov/citz-imb-kc-express-api-docs/assets/16313579/32e3abf2-38f2-4e9f-8e09-a202cec0cab3)
+## Backlog:
+
+- Make generateDocs work with Vanilla vs TypeScript and Development vs Production
+- Some schemas aren't parsed properly
+- Get path params and body in same way as query
+- Get and display responses
+- Clean up header styling
+- Clean up login button state
+- Make common controllers part of customControllers config option
+- Add entities
+- Add minimize button to module sections and minimize all button
+- Describe syntax and structure requirements/limitations in README
 
 <br />
 
@@ -17,7 +28,7 @@
 1. Install package by following the steps at [Installing the Package](#installing-the-package).
 2. Set up the package by following the steps at [Basic Setup Guide](#basic-setup-guide).
 3. Use with [@bcgov/citz-imb-kc-express].
-4. Allows semi-auto generation of api documentation and integration with Keycloak SSO protected endpoints.
+4. Allows automatic generation of api documentation and integration with Keycloak SSO protected endpoints.
 
 </details>
 
@@ -40,7 +51,7 @@
 - For running on a NodeJS:20 Express API.
 - Works with Vanilla JavaScript or Typescript 5.
 - Use with [@bcgov/citz-imb-kc-express].
-- Allows semi-auto generation of api documentation and integration with Keycloak SSO protected endpoints.
+- Allows automatic generation of api documentation and integration with Keycloak SSO protected endpoints.
 
 ---
 
@@ -71,9 +82,40 @@
 
 ## Basic Setup Guide
 
-1. Add the required environment variables from the [Environment Variables](#environment-variables) section below.
+1. Add import `const { apiDocs } = require('@bcgov/citz-imb-kc-express-api-docs');` or `import { apiDocs } from '@bcgov/citz-imb-kc-express-api-docs';` to the top of the file that defines the express app. Add `apiDocs(app, API_DOCS_CONFIG);` below the definition of the express app, where `app` is defined by `express()`.
 
-2. TBD
+*Example:*
+
+```JavaScript
+import express from 'express';
+import { apiDocs, BaseAPIDocsConfig } from '@bcgov/citz-imb-kc-express-api-docs';
+
+const API_DOCS_CONFIG = {
+  ...BaseAPIDocsConfig,
+  expressFilePath: "src/express.ts", // Default set by BaseAPIDocsConfig
+  modulesBasePath: "src/modules/", // Default set by BaseAPIDocsConfig
+  modules: {
+    health: {
+      description: 'Check application health.',
+    },
+  },
+  customSchemas: { // This is an optional property.
+    'zodProperty.nonEmptyString': { // Example of custom zod schema object.
+      required: true,
+      type: 'string',
+    },
+  } as CustomSchemaConfig,
+  defaultResponses: [[503, 'An unexpected error occurred.']],
+};
+
+// Define Express App
+const app = express();
+
+// Initialize api docs
+apiDocs(app, API_DOCS_CONFIG);
+```
+
+2. Add the required environment variables from the [Environment Variables](#environment-variables) section below.
 
 [Return to Top](#bcgov-express-+-sso-keycloak-api-documentation)
 
@@ -82,7 +124,17 @@
 ## Environment Variables
 
 ```ENV
-# TBD
+# Ensure the following environment variables are defined on the container.
+
+BACKEND_URL= # URL of the backend application.
+
+SSO_CLIENT_ID= # Keycloak client_id
+SSO_CLIENT_SECRET= # Keycloak client_secret
+SSO_AUTH_SERVER_URL= # Keycloak auth URL, see example below.
+# https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect
+
+DEBUG= # (optional) Set to 'true' to get useful debug statements in api console.
+VERBOSE_DEBUG= # (optional) Set to 'true' to get extra details from DEBUG.
 ```
 
 [Return to Top](#bcgov-express-+-sso-keycloak-api-documentation)
@@ -110,6 +162,7 @@
 |   ├── remove-dts-files.mjs                # Removes TypeScript declaration files from the build.
 |   └── remove-empty-dirs.mjs               # Removes empty directories from the build.
 ├── src/                                    # Source code for package.
+|   ├── static/                             # Static files served as the api documentation.
 |   ├── utils/                              # Utility functions.
 |   ├── config.ts                           # Config variables.
 |   ├── index.ts                            # Export functions for the package.
@@ -160,8 +213,16 @@ These are the functions and types exported by the `@bcgov/citz-imb-kc-express-ap
 
 ```JavaScript
 import {
-  // TBD
+  apiDocs, // Initialization function to generate api docs.
+  BaseAPIDocsConfig, // Base config variables.
 } from '@bcgov/citz-imb-kc-express-api-docs';
+
+// TypeScript Types:
+import {
+  Config, // Type for configuration options.
+  CustomSchemaConfig, // Type for custom schema configuration options.
+  QueryParamProperties, // Type for properties of query parameters.
+} from '@bcgov/citz-imb-kc-express';
 
 ```
 
@@ -174,7 +235,51 @@ import {
 These are the TypeScript types of the `@bcgov/citz-imb-kc-express-api-docs` module.
 
 ```TypeScript
-// TBD
+const apiDocs: (app: Application, config: Config) => void;
+
+type CustomSchemaConfig = {
+    [pattern: string]: QueryParamProperties;
+};
+type Config = {
+    title: string;
+    description: string;
+    expressFilePath: string;
+    modulesBasePath: string;
+    modules: {
+        [module: string]: {
+            description: string;
+        };
+    };
+    customSchemas?: CustomSchemaConfig;
+    defaultResponses: (string | number)[][];
+};
+type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+type QueryParamProperties = {
+    required: boolean;
+    type: "string" | "number" | "boolean";
+};
+type Endpoint = {
+    route: string;
+    method: Method;
+    description?: string;
+    controller: {
+        name: string;
+        path: string;
+        query?: {
+            [param: string]: QueryParamProperties;
+        };
+        querySchema?: z.ZodSchema<unknown>;
+    };
+};
+type Modules = {
+    [key: string]: {
+        description: string;
+        protected: boolean;
+        protectedBy: string[];
+        protectedByAll: boolean;
+        endpoints: Endpoint[];
+    };
+};
 ```
 
 [Return to Top](#bcgov-express-+-sso-keycloak-api-documentation)
@@ -185,9 +290,7 @@ These are the TypeScript types of the `@bcgov/citz-imb-kc-express-api-docs` modu
 
 The following applications are currently using this keycloak implementation solution:
 
-TBD
-
-<!-- [PLAY](https://github.com/bcgov/citz-imb-playground) - CITZ IMB Package Testing App -->
+[PLAY](https://github.com/bcgov/citz-imb-playground) - CITZ IMB Package Testing App
 <!-- TBD: [SET](https://github.com/bcgov/citz-imb-salary-estimate-tool) - Salary Estimation Tool -->
 
 [Return to Top](#bcgov-express-+-sso-keycloak-api-documentation)

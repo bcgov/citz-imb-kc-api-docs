@@ -8,7 +8,7 @@
 <body>
   <!-- Header -->
   <%- include('./header.ejs'); %>
-    <div>
+  <div class="page-body">
       <% Object.keys(endpoints).forEach(function(moduleName) { %>
         <!-- Module Section-->
         <section class="module-section">
@@ -51,6 +51,6 @@
             <% }); %>
         </section>
     <% }); %>
-    </div>
+  </div>
 </body>
 </html>
