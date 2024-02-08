@@ -2,29 +2,42 @@ export const parseFunctionDescription = (
   fileContent: string,
   functionName: string
 ) => {
-  // Pattern to match a block comment above the function declaration
-  const pattern = new RegExp(
+  // Pattern for block comments
+  const blockCommentPattern = new RegExp(
     `\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
     "gm"
   );
+  // Pattern for single-line comments
+  const singleLineCommentPattern = new RegExp(
+    `\\/\\/\\s*(.*?)\\s*\\n\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
+    "gm"
+  );
 
-  const matches = [...fileContent.matchAll(pattern)];
+  let description = ""; // Initialize description variable
 
-  if (matches.length > 0) {
-    // Extract the last match (in case there are multiple matches for the function name)
-    const lastMatch = matches[matches.length - 1][1];
+  // First, try to match block comments
+  const blockMatches = [...fileContent.matchAll(blockCommentPattern)];
 
-    // Split the comment block into lines and trim each line
+  if (blockMatches.length > 0) {
+    const lastMatch = blockMatches[blockMatches.length - 1][1];
     const lines = lastMatch.split("\n").map((line) => line.trim());
-
-    // Find the first descriptive line of the comment, ignoring lines with only '*', '@' annotations, or empty lines
     const descriptionLine = lines.find(
       (line) => line && !line.match(/^(\*|@|\s*$)/)
     );
 
     if (descriptionLine) {
-      // Clean up the description line by removing leading '*' and trimming
-      return descriptionLine.replace(/^\*+/, "").trim();
+      description = descriptionLine.replace(/^\*+/, "").trim();
+    }
+  }
+
+  // If no description has been found in block comments, try single-line comments
+  if (!description) {
+    const singleLineMatches = [
+      ...fileContent.matchAll(singleLineCommentPattern),
+    ];
+    if (singleLineMatches.length > 0) {
+      // Take the match closest to the function
+      description = singleLineMatches[singleLineMatches.length - 1][1].trim();
     }
   }
 
