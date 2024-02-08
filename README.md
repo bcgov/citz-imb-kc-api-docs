@@ -19,6 +19,7 @@
 - Add entities
 - Add minimize button to module sections and minimize all button
 - Describe syntax and structure requirements/limitations in README
+- Add BCSans font
 
 <br />
 

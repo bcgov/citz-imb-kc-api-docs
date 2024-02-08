@@ -13,7 +13,7 @@ export default [
         sourcemap: true,
       },
     ],
-    external: ["express", "ejs", "zod"],
+    external: ["express", "ejs", "zod", "@bcgov/bc-sans"],
     plugins: [
       copy({
         targets: [{ src: "src/static/*", dest: "build/static" }],

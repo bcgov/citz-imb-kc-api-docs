@@ -1,8 +1,10 @@
+@import "@bcgov/bc-sans/css/BC_Sans.css";
+
 body {
   margin: 0;
+  font-family: BC Sans, Calibri, Arial, sans-serif;
 }
 .page-body {
-  font-family: Arial, sans-serif;
   margin: 8px;
 }
 header {
