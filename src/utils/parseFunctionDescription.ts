@@ -18,13 +18,15 @@ export const parseFunctionDescription = (
 
     if (blockCommentContent) {
       // Process block comment
-      const lines = blockCommentContent.split("\n").map((line) => line.trim());
+      const lines = blockCommentContent.split("\n");
+      // Find the first line that is likely descriptive, ignoring lines that only contain '*', are annotations, or are empty
       const descriptionLine = lines.find(
-        (line) => line && !line.match(/^(\*|@|\s*$)/)
+        (line) => line.match(/^\s*\*\s+.+/) && !line.match(/^\s*\*\s+@/)
       );
 
       if (descriptionLine) {
-        return descriptionLine.replace(/^\*+/, "").trim(); // Clean up and return the description line
+        // Remove leading '*', whitespace, and return the description line
+        return descriptionLine.replace(/^\s*\*\s+/, "").trim();
       }
     } else if (singleLineCommentContent) {
       // Use single-line comment content as description
