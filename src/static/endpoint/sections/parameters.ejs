@@ -35,12 +35,6 @@
       <% }); %>
     <% } %>
 
-    <!-- No Parameters -->
-    <% if (Object.keys(routeQueryParams).length === 0 && routePathParams && routePathParams.length === 0) { %>
-        <p class="param-text font-small">No parameters required.</p>
-        <br /><br />
-    <% } %>
-
     <button class="execute-button endpoint-method-block-<%= endpoint.method %>" id="execute-btn-<%= moduleName %>-<%= index %>">
       Execute
     </button>
