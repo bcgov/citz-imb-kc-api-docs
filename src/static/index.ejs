@@ -1,60 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title><%= title %></title>
     <link rel="stylesheet" href="/styles.css">
-</head>
-<script src="/script.js"></script>
-<body>
-  <!-- Endpoint data -->
-  <div id="endpoint-data" style="display: none;" data-endpoints="<%= JSON.stringify(endpoints) %>"></div>
+  </head>
+  <script src="/script.js"></script>
+  <body>
+    <!-- Endpoint data -->
+    <div id="endpoint-data" style="display: none;" data-endpoints="<%= JSON.stringify(endpoints) %>"></div>
 
-  <!-- Header -->
-  <%- include('./header/index.ejs'); %>
+    <!-- Header -->
+    <%- include('./header/index.ejs'); %>
 
-  <div class="page-container">
-      <% Object.keys(endpoints).forEach(function(moduleName) { %>
-        <!-- Module Section-->
-        <section class="module-section">
-          <div class="module-title-container">
-            <h3 class="module-title"><%= moduleName %></h3>
-            <p class="module-description"><%= endpoints[moduleName].description %></p>
-          </div>
-
-            <% endpoints[moduleName].endpoints.forEach(function(endpoint, index) { %>
-                <div class="endpoint-block endpoint-method-background-<%= endpoint.method %>">
-                    <!-- Summary Block -->
-                    <div class="endpoint-block-summary">
-
-                        <!-- Summary Title -->
-                        <%- include('./endpoint/summary.ejs', { moduleName, endpoint }); %>
-
-                        <!-- Copy to Clipboard Button-->
-                        <%- include('./endpoint/copyToClipboardButton.ejs', { moduleName, endpoint, index }); %>
-
-                        <!-- Expansion Button -->
-                        <%- include('./endpoint/expansionButton.ejs', { moduleName, endpoint, index }); %>
-
-                    </div>
-
-                    <!-- Details -->
-                    <div class="endpoint-block-details" id="details-<%= moduleName %><%= index %>">
-
-                      <!-- Authentication Section -->
-                      <%- include('./endpoint/sections/authentication.ejs', { moduleName, endpoints }); %>
-      
-                      <!-- Parameters Section -->
-                      <%- include('./endpoint/sections/parameters.ejs', { moduleName, endpoint, index }); %>
-      
-                      <!-- Responses Section -->
-                      <%- include('./endpoint/sections/responses.ejs', { moduleName, endpoint, index }); %>
-      
-                    </div>
-
-                </div>
-            <% }); %>
-        </section>
-    <% }); %>
-  </div>
-</body>
+    <!-- Page -->
+    <%- include('./page/index.ejs', { endpoints }); %>
+  </body>
 </html>

@@ -1,0 +1,21 @@
+.module-header {
+  padding: 6px;
+  margin: 15px 0;
+  background-color: var(--white);
+  border: 1px solid var(--black);
+  border-radius: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+}
+
+.module-title {
+  padding-right: 10px;
+  margin: 0;
+}
+
+.module-description {
+  margin: 0;
+  font-size: 0.9em;
+}

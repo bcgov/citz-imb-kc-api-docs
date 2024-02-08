@@ -1,0 +1,20 @@
+<div class="page-container">
+  <!-- Each Module in endpoints -->
+  <% Object.keys(endpoints).forEach(function(moduleName) { %>
+
+    <!-- Module Section -->
+    <section class="module-section">
+
+      <!-- Module Header -->
+      <%- include('./module-header/index.ejs', { moduleName, endpoints }); %>
+
+      <!-- Each Endpoint in Module 'moduleName' -->
+      <% endpoints[moduleName].endpoints.forEach(function(endpoint, index) { %>
+
+        <!-- Endpoint -->
+        <%- include('./endpoint/index.ejs', { endpoints, moduleName, endpoint, index }); %>
+
+      <% }); %>
+    </section>
+  <% }); %>
+</div>
