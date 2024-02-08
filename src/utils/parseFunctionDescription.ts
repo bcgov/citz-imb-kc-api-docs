@@ -2,42 +2,36 @@ export const parseFunctionDescription = (
   fileContent: string,
   functionName: string
 ) => {
-  // Pattern for block comments
-  const blockCommentPattern = new RegExp(
-    `\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
-    "gm"
-  );
-  // Pattern for single-line comments
-  const singleLineCommentPattern = new RegExp(
-    `\\/\\/\\s*(.*?)\\s*\\n\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
+  // Combined pattern for block comments or single-line comments
+  const commentPattern = new RegExp(
+    `(\\/\\*\\*([\\s\\S]*?)\\*\\/|\\/\\/\\s*(.*))\\s*\\n\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
     "gm"
   );
 
   let description = ""; // Initialize description variable
 
-  // First, try to match block comments
-  const blockMatches = [...fileContent.matchAll(blockCommentPattern)];
+  // Array to hold all matches to find the last (closest) match
+  const matches = [...fileContent.matchAll(commentPattern)];
 
-  if (blockMatches.length > 0) {
-    const lastMatch = blockMatches[blockMatches.length - 1][1];
-    const lines = lastMatch.split("\n").map((line) => line.trim());
-    const descriptionLine = lines.find(
-      (line) => line && !line.match(/^(\*|@|\s*$)/)
-    );
+  if (matches.length > 0) {
+    // Use the last (closest) match
+    const lastMatch = matches[matches.length - 1];
+    const blockCommentContent = lastMatch[2]; // Group 2 captures block comments
+    const singleLineCommentContent = lastMatch[3]; // Group 3 captures single-line comments
 
-    if (descriptionLine) {
-      description = descriptionLine.replace(/^\*+/, "").trim();
-    }
-  }
+    if (blockCommentContent) {
+      // Process block comment
+      const lines = blockCommentContent.split("\n").map((line) => line.trim());
+      const descriptionLine = lines.find(
+        (line) => line && !line.match(/^(\*|@|\s*$)/)
+      );
 
-  // If no description has been found in block comments, try single-line comments
-  if (!description) {
-    const singleLineMatches = [
-      ...fileContent.matchAll(singleLineCommentPattern),
-    ];
-    if (singleLineMatches.length > 0) {
-      // Take the match closest to the function
-      description = singleLineMatches[singleLineMatches.length - 1][1].trim();
+      if (descriptionLine) {
+        description = descriptionLine.replace(/^\*+/, "").trim();
+      }
+    } else if (singleLineCommentContent) {
+      // Use single-line comment content as description
+      description = singleLineCommentContent.trim();
     }
   }
 
