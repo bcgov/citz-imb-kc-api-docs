@@ -2,22 +2,19 @@ export const parseFunctionDescription = (
   fileContent: string,
   functionName: string
 ) => {
-  // Combined pattern for block comments or single-line comments
-  const commentPattern = new RegExp(
+  // Pattern to match block comments or single-line comments above the function declaration
+  const pattern = new RegExp(
     `(\\/\\*\\*([\\s\\S]*?)\\*\\/|\\/\\/\\s*(.*))\\s*\\n\\s*(?:export\\s+const\\s+)?${functionName}\\s*=`,
     "gm"
   );
 
-  let description = ""; // Initialize description variable
-
-  // Array to hold all matches to find the last (closest) match
-  const matches = [...fileContent.matchAll(commentPattern)];
+  const matches = [...fileContent.matchAll(pattern)];
 
   if (matches.length > 0) {
     // Use the last (closest) match
     const lastMatch = matches[matches.length - 1];
-    const blockCommentContent = lastMatch[2]; // Group 2 captures block comments
-    const singleLineCommentContent = lastMatch[3]; // Group 3 captures single-line comments
+    const blockCommentContent = lastMatch[2]; // Group 2 captures block comment content
+    const singleLineCommentContent = lastMatch[3]; // Group 3 captures single-line comment content
 
     if (blockCommentContent) {
       // Process block comment
@@ -27,11 +24,11 @@ export const parseFunctionDescription = (
       );
 
       if (descriptionLine) {
-        description = descriptionLine.replace(/^\*+/, "").trim();
+        return descriptionLine.replace(/^\*+/, "").trim(); // Clean up and return the description line
       }
     } else if (singleLineCommentContent) {
       // Use single-line comment content as description
-      description = singleLineCommentContent.trim();
+      return singleLineCommentContent.trim();
     }
   }
 
