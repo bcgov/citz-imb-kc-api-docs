@@ -1,4 +1,3 @@
-import fs from "fs";
 import { Config, Modules } from "./types";
 import {
   getModuleDetails,
@@ -31,11 +30,5 @@ export const generateDocs = (config: Config) => {
     customSchemas ?? {}
   );
 
-  // Write output to file.
-  const filePath = "src/endpoints.json";
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(controllerDetails, null, 2),
-    "utf8"
-  );
+  return controllerDetails;
 };

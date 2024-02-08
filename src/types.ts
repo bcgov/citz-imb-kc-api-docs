@@ -27,6 +27,8 @@ export type CustomSchemaConfig = {
 };
 
 export type Config = {
+  title: string;
+  description: string;
   expressFilePath: string;
   modulesBasePath: string;
   modules: {

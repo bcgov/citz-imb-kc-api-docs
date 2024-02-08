@@ -27,7 +27,4 @@ export default {
   BACKEND_URL,
   DEBUG,
   VERBOSE_DEBUG,
-  TITLE: "API Documentation",
-  DESCRIPTION:
-    "Welcome to our API documentation. Here you'll find details about our API's functionalities. This documentation is automatically generated based on the api codebase.",
 };

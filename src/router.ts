@@ -1,12 +1,11 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import { getLoginURL, getTokens } from "./utils/index";
-import { IdentityProvider, ModuleEndpoints } from "./types";
+import { IdentityProvider, Modules } from "./types";
 import path from "path";
 const router = express.Router();
 
 import config from "./config";
-const { BACKEND_URL, BASE_PATH, LOGIN, LOGIN_CALLBACK, TITLE, DESCRIPTION } =
-  config;
+const { BACKEND_URL, BASE_PATH, LOGIN, LOGIN_CALLBACK } = config;
 
 // Middleware function to serve files.
 export const apiDocsServe = (app: Application) => {
@@ -20,7 +19,11 @@ export const apiDocsServe = (app: Application) => {
 };
 
 // Router.
-export const apiDocsRender = (endpointsJson: ModuleEndpoints) => {
+export const apiDocsRender = (
+  endpointsJson: Modules,
+  title: string,
+  description: string
+) => {
   router.get(LOGIN, (req: Request, res: Response) => {
     try {
       const { idp } = req.query;
@@ -58,8 +61,8 @@ export const apiDocsRender = (endpointsJson: ModuleEndpoints) => {
   // Serves documentation.
   router.get("/", (req: Request, res: Response) => {
     res.render("index", {
-      title: TITLE,
-      description: DESCRIPTION,
+      title,
+      description,
       endpoints: endpointsJson,
     });
   });
