@@ -1,0 +1,31 @@
+header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: var(--white);
+}
+
+.logo {
+  max-height: 60px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.header-title {
+  margin: 0;
+  margin-left: 15px;
+}
+.header-description {
+  margin-bottom: 5px;
+}

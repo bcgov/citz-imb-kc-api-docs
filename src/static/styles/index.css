@@ -1,7 +1,0 @@
-@import "@bcgov/bc-sans/css/BC_Sans.css";
-@import "endpoint.css";
-
-body {
-  margin: 0;
-  font-family: BC Sans, Calibri, Arial, sans-serif;
-}

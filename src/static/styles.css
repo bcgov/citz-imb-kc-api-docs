@@ -1,30 +1,42 @@
 @import "@bcgov/bc-sans/css/BC_Sans.css";
+@import "variables.css";
+@import "header/styles.css";
+@import "endpoint/styles.css";
 
 body {
   margin: 0;
   font-family: BC Sans, Calibri, Arial, sans-serif;
+  font-size: var(--font-size);
+  color: var(--text-color);
 }
-.page-body {
+
+a {
+  color: var(--link-text-color);
+}
+
+a:hover {
+  color: var(--link-text-color-hover);
+}
+
+button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  line-height: 27px;
+  background-color: var(--white);
+  border: 1px solid var(--dark-grey);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--light-grey2);
+}
+
+.page-container {
   margin: 8px;
+  background-color: var(--light-grey);
 }
-header {
-  display: flex;
-  flex-direction: column;
-}
-.title-header {
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: #234075;
-  border-bottom: 2px solid #e3a82b;
-  color: #fff;
-}
-.page-title {
-  margin: 0;
-}
-.page-description {
-  margin-bottom: 5px;
-  color: #f1f1f1;
-}
+
 .authentication-button {
   padding: 12px;
   height: fit-content;
