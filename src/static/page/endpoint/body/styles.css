@@ -1,0 +1,79 @@
+.execute-button {
+  background: #000;
+  border-radius: 3px;
+  border: none;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  width: 100%;
+  padding: 6px 0;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0,0,0,.1);
+  cursor: pointer;
+}
+
+.execute-button:hover {
+  box-shadow: 0 0 5px rgba(0,0,0,.3);
+}
+
+.authentication-section-public {
+  margin-top: 0;
+  font-weight: 700;
+  font-size: 0.8em;
+  color: #0c760c;
+}
+
+.authentication-section-protected {
+  margin-top: 0;
+  font-weight: 700;
+  font-size: 0.8em;
+  color: #d61212;
+}
+
+.execution-response-body {
+  background: #333;
+  border-radius: 4px;
+  font-size: 12px;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  margin: 0;
+  padding: 10px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-break: break-word;
+  word-wrap: break-word;
+  color: #fff;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.json-language-number {
+  color: #e64f4f;
+}
+
+.json-language-string {
+  color: #8af38a;
+}
+
+.json-language-boolean {
+  color: #7d7dee;
+}
+
+.json-language-bracket {
+  color: #f9da61;
+}
+
+.param-text {
+  color: #636363;
+}
+
+.required-param {
+  color: #bc1f1f;
+}
+
+.param-input {
+  border-radius: 4px;
+  height: 25px;
+  width: 300px;
+}

@@ -1,6 +1,6 @@
 <div class="endpoint-block endpoint-method-background-<%= endpoint.method %>">
   <!-- Header -->
-  <div class="endpoint-block-summary">
+  <div class="endpoint-block-header">
 
     <!-- Summary Title -->
     <%- include('./header/summary/index.ejs', { moduleName, endpoint }); %>
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Body -->
-  <div class="endpoint-block-details" id="details-<%= moduleName %><%= index %>">
+  <div class="endpoint-block-body" id="details-<%= moduleName %><%= index %>">
 
     <!-- Authentication Section -->
     <%- include('./body/authentication/index.ejs', { moduleName, endpoints }); %>

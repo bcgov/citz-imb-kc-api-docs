@@ -1,0 +1,41 @@
+@import "./header/styles.css";
+@import "./body/styles.css";
+
+.endpoint-block {
+  border: 1px solid #000;
+  border-radius: 4px;
+  box-shadow: 0 0 3px rgba(0,0,0,.19);
+  margin: 0 0 15px;
+}
+
+.endpoint-block-header {
+  display: flex;
+}
+
+.endpoint-block-body {
+  border-top: 1px solid #000;
+  height: auto;
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+.endpoint-method-background-GET {
+  background-color: rgba(97,175,254,.1);
+}
+
+.endpoint-method-background-POST {
+  background-color: rgba(73,204,144,.1);
+}
+
+.endpoint-method-background-PATCH {
+  background-color: rgba(204, 176, 73, 0.1);
+}
+
+.endpoint-method-background-PUT {
+  background-color: rgba(252,161,48,.1);
+}
+
+.endpoint-method-background-DELETE {
+  background-color: rgba(249,62,62,.1);
+}

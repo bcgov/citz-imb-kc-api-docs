@@ -6,6 +6,8 @@ header {
   margin: 0;
   margin-bottom: 15px;
   height: 65px;
+  border-left: 5px solid var(--bcgov-yellow);
+  border-bottom: 1px solid var(--light-grey2);
 }
 
 .logo {

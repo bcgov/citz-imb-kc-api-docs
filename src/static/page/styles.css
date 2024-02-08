@@ -1,0 +1,8 @@
+.page-container {
+  padding: 8px;
+  background-color: var(--light-grey);
+}
+
+.module-section {
+  margin-bottom: 45px;
+}
