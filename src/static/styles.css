@@ -33,24 +33,14 @@ button:hover {
 }
 
 .page-container {
-  margin: 8px;
+  padding: 8px;
   background-color: var(--light-grey);
 }
 
 .authentication-button {
-  padding: 12px;
-  height: fit-content;
-  width: fit-content;
-  border: 1px solid #013c80;
-  border-radius: 4px;
-  background-color: #26ae56;
   display: flex;
   align-items: center;
   align-self: flex-end;
-  cursor: pointer;
-}
-.authentication-button:hover {
-  background-color: #3ae074;
 }
 .authentication-button h3 {
   margin: 0;
@@ -62,7 +52,7 @@ button:hover {
 .module-title-container {
   padding: 6px;
   margin: 15px 0;
-  background-color: #efefef;
+  background-color: var(--white);
   border: 1px solid #000;
   border-radius: 4px;
   display: flex;
