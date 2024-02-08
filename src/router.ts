@@ -19,11 +19,7 @@ export const apiDocsServe = (app: Application) => {
 };
 
 // Router.
-export const apiDocsRender = (
-  endpointsJson: Modules,
-  title: string,
-  description: string
-) => {
+export const apiDocsRender = (endpointsJson: Modules, title: string) => {
   router.get(LOGIN, (req: Request, res: Response) => {
     try {
       const { idp } = req.query;
@@ -62,7 +58,6 @@ export const apiDocsRender = (
   router.get("/", (req: Request, res: Response) => {
     res.render("index", {
       title,
-      description,
       endpoints: endpointsJson,
     });
   });
