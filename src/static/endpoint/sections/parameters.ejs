@@ -36,7 +36,7 @@
     <% } %>
 
     <!-- No Parameters -->
-    <% if (Object.keys(routeQueryParams).length === 0 && routePathParams.length === 0) { %>
+    <% if (Object.keys(routeQueryParams).length === 0 && routePathParams && routePathParams.length === 0) { %>
         <p class="param-text font-small">No parameters required.</p>
         <br /><br />
     <% } %>
