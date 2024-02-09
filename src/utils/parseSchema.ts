@@ -30,15 +30,19 @@ export const parseSchema = (
     const match = schemaPattern.exec(schemaFileContent);
 
     if (match) {
-      // Extract the properties string from the match
-      const propertiesString = match[1];
+      // Extract the properties string from the match, removing all newline characters
+      const propertiesString = match[1].replace(/\s+/g, " ");
 
-      // Split the string by commas not inside quotes to get individual properties
-      const schemaProperties = propertiesString.split(
-        /,(?=(?:[^"]*"[^"]*")*[^"]*$)/
-      );
+      // Split the string by commas to get individual properties
+      const schemaProperties = propertiesString.split(/,(?=[^,]*?:)/);
 
-      schemaProperties.forEach((param) => {
+      schemaProperties.forEach((prop) => {
+        // Extract the key for each property
+        const [key] = prop.split(/:\s*/);
+
+        // Clean up the key
+        const param = key.trim();
+
         const properties = parseSchemaProperty(schema, param, customSchemas);
         if (properties) params[param] = properties;
         else params[param] = { required: true, type: "string" };
