@@ -26,6 +26,15 @@ export type CustomSchemaConfig = {
   [pattern: string]: QueryParamProperties;
 };
 
+export type CustomControllerConfig = {
+  [controller: string]: {
+    description: string;
+    query?: {
+      [param: string]: QueryParamProperties;
+    };
+  };
+};
+
 export type Config = {
   title: string;
   expressFilePath: string;
@@ -36,6 +45,7 @@ export type Config = {
     };
   };
   customSchemas?: CustomSchemaConfig;
+  customControllers?: CustomControllerConfig;
   defaultResponses: (string | number)[][];
 };
 

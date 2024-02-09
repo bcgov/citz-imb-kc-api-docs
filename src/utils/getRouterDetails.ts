@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Method, Modules } from "../types";
+import { CustomControllerConfig, Method, Modules } from "../types";
 
 /**
  * Gets details from the router for each module,
@@ -7,12 +7,18 @@ import { Method, Modules } from "../types";
  * with dynamic paths based on controller names,
  * with special handling for 'dataController'.
  */
-export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
+export const getRouterDetails = (
+  modules: Modules,
+  modulesBasePath: string,
+  customControllers: CustomControllerConfig
+) => {
   Object.keys(modules).forEach((module) => {
     const routerFileContent = fs.readFileSync(
       `${modulesBasePath}${module}/router.ts`,
       "utf8"
     );
+
+    const customControllerNames = Object.keys(customControllers);
 
     // Initialize a map to hold controller names and their import paths
     const controllerPaths: { [key: string]: string } = {};
@@ -38,17 +44,13 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
 
     // Function to determine the path for a controller name
     const getControllerPath = (controllerName: string) => {
-      if (controllerName.startsWith("dataController")) {
-        return `${modulesBasePath}common/controller/controller.class.ts`;
-      } else {
-        const controllerImportPath = controllerPaths[controllerName];
-        return controllerImportPath
-          ? `${modulesBasePath}${module}/${controllerImportPath.replace(
-              /^\.\//,
-              ""
-            )}.ts`
-          : "";
-      }
+      const controllerImportPath = controllerPaths[controllerName];
+      return controllerImportPath
+        ? `${modulesBasePath}${module}/${controllerImportPath.replace(
+            /^\.\//,
+            ""
+          )}.ts`
+        : "";
     };
 
     // Syntax: router.<method>(...)
@@ -57,14 +59,30 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
     let match;
     while ((match = methodRegex.exec(routerFileContent)) !== null) {
       const [_, httpMethod, routePath, controllerName] = match;
-      modules[module].endpoints.push({
-        route: routePath,
-        method: httpMethod.toUpperCase() as Method,
-        controller: {
-          name: controllerName,
-          path: getControllerPath(controllerName),
-        },
-      });
+
+      if (customControllerNames.includes(controllerName)) {
+        // Controller name is included in customControllers config.
+        modules[module].endpoints.push({
+          route: routePath,
+          method: httpMethod.toUpperCase() as Method,
+          description: customControllers[controllerName].description,
+          controller: {
+            name: controllerName,
+            path: "",
+            query: customControllers[controllerName]?.query ?? {},
+          },
+        });
+      } else {
+        // Else
+        modules[module].endpoints.push({
+          route: routePath,
+          method: httpMethod.toUpperCase() as Method,
+          controller: {
+            name: controllerName,
+            path: getControllerPath(controllerName),
+          },
+        });
+      }
     }
 
     // Syntax: router.route(...).<method>(...)
@@ -77,14 +95,29 @@ export const getRouterDetails = (modules: Modules, modulesBasePath: string) => {
       let methodMatch;
       while ((methodMatch = methodMatchRegex.exec(methodBlock)) !== null) {
         const [_, httpMethod, controllerName] = methodMatch;
-        modules[module].endpoints.push({
-          route: baseRoute,
-          method: httpMethod.toUpperCase() as Method,
-          controller: {
-            name: controllerName,
-            path: getControllerPath(controllerName),
-          },
-        });
+        if (customControllerNames.includes(controllerName)) {
+          // Controller name is included in customControllers config.
+          modules[module].endpoints.push({
+            route: baseRoute,
+            method: httpMethod.toUpperCase() as Method,
+            description: customControllers[controllerName].description,
+            controller: {
+              name: controllerName,
+              path: "",
+              query: customControllers[controllerName]?.query ?? {},
+            },
+          });
+        } else {
+          // Else
+          modules[module].endpoints.push({
+            route: baseRoute,
+            method: httpMethod.toUpperCase() as Method,
+            controller: {
+              name: controllerName,
+              path: getControllerPath(controllerName),
+            },
+          });
+        }
       }
     }
   });

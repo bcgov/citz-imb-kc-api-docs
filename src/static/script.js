@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const index = this.getAttribute("id").split("-").slice(-2).join("-");
       const module = index.split("-")[0];
       const endpointIndex = index.split("-")[1];
+      const endpoint = endpoints[module].endpoints[endpointIndex];
       let route =
         endpoint.route === "/" ? "/" + module : "/" + module + endpoint.route;
 

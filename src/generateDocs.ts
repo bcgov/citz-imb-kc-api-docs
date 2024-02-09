@@ -6,7 +6,13 @@ import {
 } from "./utils";
 
 export const generateDocs = (config: Config) => {
-  const { expressFilePath, modulesBasePath, customSchemas, modules } = config;
+  const {
+    expressFilePath,
+    modulesBasePath,
+    customSchemas,
+    customControllers,
+    modules,
+  } = config;
 
   const moduleNames = Object.keys(modules);
 
@@ -20,7 +26,8 @@ export const generateDocs = (config: Config) => {
   // Add details about the endpoints from the router file for each module.
   const routerDetails: Modules = getRouterDetails(
     moduleDetails,
-    modulesBasePath
+    modulesBasePath,
+    customControllers ?? {}
   );
 
   // Add controller details
