@@ -39,3 +39,23 @@
 .endpoint-method-background-DELETE {
   background-color: rgba(249,62,62,.1);
 }
+
+.endpoint-method-block-GET {
+  background-color: #61affe;
+}
+
+.endpoint-method-block-POST {
+  background-color: #49cc90;
+}
+
+.endpoint-method-block-PATCH {
+  background-color: #e3ce31;
+}
+
+.endpoint-method-block-PUT {
+  background-color: #fca130;
+}
+
+.endpoint-method-block-DELETE {
+  background-color: #f93e3e;
+}

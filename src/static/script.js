@@ -1,15 +1,36 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var executeButtons = document.querySelectorAll(".execute-button");
-  var expandButtons = document.querySelectorAll(".expand-arrow-button");
+  const executeButtons = document.querySelectorAll(".execute-button");
+  const endpointExpandButtons = document.querySelectorAll(
+    ".expand-arrow-button"
+  );
+  const moduleExpandButtons = document.querySelectorAll(
+    ".module-expand-arrow-button"
+  );
 
-  expandButtons.forEach(function (button) {
+  moduleExpandButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      var detailsId = this.getAttribute("data-index");
-      var details = document.getElementById("details-" + detailsId);
-      var svgs = this.querySelectorAll(".arrow-svg");
+      const detailsId = this.getAttribute("data-index");
+      const details = document.getElementById("module-details-" + detailsId);
+      const svgs = this.querySelectorAll(".module-arrow-svg");
 
       // Toggle details visibility
-      var isDisplayed = details.style.display === "block";
+      let isDisplayed = details.style.display === "block";
+      details.style.display = isDisplayed ? "none" : "block";
+
+      // Switch SVG visibility
+      svgs[0].style.display = isDisplayed ? "block" : "none";
+      svgs[1].style.display = isDisplayed ? "none" : "block";
+    });
+  });
+
+  endpointExpandButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const detailsId = this.getAttribute("data-index");
+      const details = document.getElementById("details-" + detailsId);
+      const svgs = this.querySelectorAll(".arrow-svg");
+
+      // Toggle details visibility
+      let isDisplayed = details.style.display === "block";
       details.style.display = isDisplayed ? "none" : "block";
 
       // Switch SVG visibility
@@ -20,25 +41,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   executeButtons.forEach(function (button) {
     button.addEventListener("click", function () {
-      var endpointsData = document
+      const endpointsData = document
         .getElementById("endpoint-data")
         .getAttribute("data-endpoints");
-      var endpoints = JSON.parse(endpointsData);
+      const endpoints = JSON.parse(endpointsData);
 
-      var index = this.getAttribute("id").split("-").slice(-2).join("-");
-      var module = index.split("-")[0];
-      var endpointIndex = index.split("-")[1];
-      var endpoint = endpoints[module].endpoints[endpointIndex];
-      var route =
+      const index = this.getAttribute("id").split("-").slice(-2).join("-");
+      const module = index.split("-")[0];
+      const endpointIndex = index.split("-")[1];
+      let route =
         endpoint.route === "/" ? "/" + module : "/" + module + endpoint.route;
 
-      var executeResponseDiv = document.getElementById(
+      const executeResponseDiv = document.getElementById(
         "execute-response-" + index
       );
-      var statusCodeElement = document.getElementById(
+      const statusCodeElement = document.getElementById(
         "execute-response-status-code-" + index
       );
-      var responseBodyElement = document.getElementById(
+      const responseBodyElement = document.getElementById(
         "execute-response-body-code-" + index
       );
 
@@ -50,22 +70,22 @@ document.addEventListener("DOMContentLoaded", function () {
         originalText
       );
 
-      var accessToken = getCookie("access_token");
-      var headers = {};
+      const accessToken = getCookie("access_token");
+      let headers = {};
 
       if (endpoints[module].protected && accessToken) {
         headers["Authorization"] = "Bearer " + accessToken;
       }
 
       // Handle route and query parameters
-      var allParamsFilled = true;
-      var queryString = "";
+      let allParamsFilled = true;
+      let queryString = "";
 
       // Replace route parameters with user inputs and check for required params
-      var routeParams = endpoint.route.match(/:[a-zA-Z]+/g);
+      const routeParams = endpoint.route.match(/:[a-zA-Z]+/g);
       if (routeParams) {
         routeParams.forEach(function (param) {
-          var inputElement = document.getElementById(
+          const inputElement = document.getElementById(
             "input-" + module + "-" + endpointIndex + "-" + param.substring(1)
           );
           if (inputElement && inputElement.value) {
@@ -77,14 +97,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Handle query parameters
-      var queryParams = endpoint.controller.query;
+      const queryParams = endpoint.controller.query;
       if (queryParams) {
-        var queryParts = [];
+        let queryParts = [];
         Object.entries(queryParams).forEach(function ([
           paramName,
           paramDetails,
         ]) {
-          var inputElement = document.getElementById(
+          const inputElement = document.getElementById(
             "query-input-" + module + "-" + endpointIndex + "-" + paramName
           );
           if (inputElement) {

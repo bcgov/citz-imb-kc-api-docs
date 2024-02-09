@@ -8,13 +8,18 @@
       <!-- Module Header -->
       <%- include('./module-header/index.ejs', { moduleName, endpoints }); %>
 
-      <!-- Each Endpoint in Module 'moduleName' -->
-      <% endpoints[moduleName].endpoints.forEach(function(endpoint, index) { %>
+      <div id="module-details-<%= moduleName %><%= index %>">
 
-        <!-- Endpoint -->
-        <%- include('./endpoint/index.ejs', { endpoints, moduleName, endpoint, index }); %>
+        <!-- Each Endpoint in Module 'moduleName' -->
+        <% endpoints[moduleName].endpoints.forEach(function(endpoint, index) { %>
 
-      <% }); %>
+          <!-- Endpoint -->
+          <%- include('./endpoint/index.ejs', { endpoints, moduleName, endpoint, index }); %>
+
+        <% }); %>
+
+      </div>
+
     </section>
   <% }); %>
 </div>

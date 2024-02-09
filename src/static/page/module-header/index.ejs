@@ -1,4 +1,9 @@
 <div class="module-header">
+
   <h3 class="module-title"><%= moduleName %></h3>
   <p class="module-description"><%= endpoints[moduleName].description %></p>
+
+  <!-- Expansion Button -->
+  <%- include('./expansion-button/index.ejs', { moduleName, index }); %>
+
 </div>
