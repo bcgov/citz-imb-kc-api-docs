@@ -20,6 +20,7 @@
 - Add minimize button to module sections and minimize all button
 - Describe syntax and structure requirements/limitations in README
 - Add BCSans font
+- Expand login to more than just IDIR
 
 <br />
 
