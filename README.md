@@ -55,6 +55,10 @@
 - Use with [@bcgov/citz-imb-kc-express].
 - Allows automatic generation of api documentation and integration with Keycloak SSO protected endpoints.
 
+*Example:*
+
+<img src="./assets/example.PNG" alt="Example Screenshot of API Docs" >
+
 ---
 
 <br />
