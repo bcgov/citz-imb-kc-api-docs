@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const svgs = this.querySelectorAll(".module-arrow-svg");
 
       // Toggle details visibility
-      let isDisplayed = details.style.display === "block";
+      let isDisplayed = details.style.display === "none";
       details.style.display = isDisplayed ? "none" : "block";
 
       // Switch SVG visibility
