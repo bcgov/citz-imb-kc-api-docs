@@ -71,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
       details.style.display = isDisplayed ? "none" : "block";
 
       // Switch SVG visibility
-      svgs[0].style.display = isDisplayed ? "none" : "block";
-      svgs[1].style.display = isDisplayed ? "block" : "none";
+      svgs[0].style.display = isDisplayed ? "block" : "none";
+      svgs[1].style.display = isDisplayed ? "none" : "block";
     });
   });
 
