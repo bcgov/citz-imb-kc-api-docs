@@ -1,4 +1,57 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const setLoadingText = (button, loadingText, originalText) => {
+    let count = 0;
+    const maxDots = 3;
+    const intervalId = setInterval(() => {
+      if (count > maxDots) {
+        button.textContent = originalText;
+        clearInterval(intervalId);
+      } else {
+        button.textContent = `${loadingText} ${".".repeat(count)}`;
+        count++;
+      }
+    }, 200); // Change the dot every 500 milliseconds
+
+    return intervalId;
+  };
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return undefined;
+  };
+
+  const syntaxHighlightJson = (json) => {
+    if (typeof json !== "string") {
+      json = JSON.stringify(json, undefined, 2);
+    }
+    json = json
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    return json.replace(
+      /(\{|\}|\[|\])|("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*")(\s*:\s*)?|(\b-?\d+(?:\.\d*)?([eE][+-]?\d+)?\b)|true|false|null/g,
+      (match, p1, p2, p3, p4, p5) => {
+        let cls = "json-language-number";
+        if (p1) {
+          // Bracket
+          cls = "json-language-bracket";
+        } else if (p4) {
+          // Property name
+          cls = "json-language-property";
+        } else if (p2) {
+          // String value
+          cls = "json-language-string";
+        } else if (/true|false|null/.test(match)) {
+          // Boolean or null
+          cls = "json-language-boolean";
+        }
+        return `<span class="${cls}">${match}</span>`;
+      }
+    );
+  };
+
   const executeButtons = document.querySelectorAll(".execute-button");
   const endpointExpandButtons = document.querySelectorAll(
     ".expand-arrow-button"
@@ -14,12 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const svgs = this.querySelectorAll(".module-arrow-svg");
 
       // Toggle details visibility
-      let isDisplayed = details.style.display === "block";
+      let isDisplayed = details.style.display === "none";
       details.style.display = isDisplayed ? "none" : "block";
 
       // Switch SVG visibility
-      svgs[0].style.display = isDisplayed ? "block" : "none";
-      svgs[1].style.display = isDisplayed ? "none" : "block";
+      svgs[0].style.display = isDisplayed ? "none" : "block";
+      svgs[1].style.display = isDisplayed ? "block" : "none";
     });
   });
 
@@ -170,56 +223,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-
-const setLoadingText = (button, loadingText, originalText) => {
-  let count = 0;
-  const maxDots = 3;
-  const intervalId = setInterval(() => {
-    if (count > maxDots) {
-      button.textContent = originalText;
-      clearInterval(intervalId);
-    } else {
-      button.textContent = `${loadingText} ${".".repeat(count)}`;
-      count++;
-    }
-  }, 200); // Change the dot every 500 milliseconds
-
-  return intervalId;
-};
-
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return undefined;
-};
-
-const syntaxHighlightJson = (json) => {
-  if (typeof json !== "string") {
-    json = JSON.stringify(json, undefined, 2);
-  }
-  json = json
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-  return json.replace(
-    /(\{|\}|\[|\])|("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*")(\s*:\s*)?|(\b-?\d+(?:\.\d*)?([eE][+-]?\d+)?\b)|true|false|null/g,
-    (match, p1, p2, p3, p4, p5) => {
-      let cls = "json-language-number";
-      if (p1) {
-        // Bracket
-        cls = "json-language-bracket";
-      } else if (p4) {
-        // Property name
-        cls = "json-language-property";
-      } else if (p2) {
-        // String value
-        cls = "json-language-string";
-      } else if (/true|false|null/.test(match)) {
-        // Boolean or null
-        cls = "json-language-boolean";
-      }
-      return `<span class="${cls}">${match}</span>`;
-    }
-  );
-};
