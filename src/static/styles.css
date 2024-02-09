@@ -2,7 +2,6 @@
 @import "variables.css";
 @import "header/styles.css";
 @import "page/styles.css";
-@import "page/endpoint/styles.css";
 
 body {
   margin: 0;

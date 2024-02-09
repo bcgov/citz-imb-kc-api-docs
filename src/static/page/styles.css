@@ -1,3 +1,6 @@
+@import "./endpoint/styles.css";
+@import "./module-header/styles.css";
+
 .page-container {
   padding: 8px;
   background-color: var(--light-grey);
