@@ -1,17 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const login = () => {
-    window.location.href = "/docs/login?idp=idir";
-  };
-
-  const copyToClipboard = (text) => {
-    const tempInput = document.createElement("input");
-    tempInput.value = text;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
-  };
-
   const setLoadingText = (button, loadingText, originalText) => {
     let count = 0;
     const maxDots = 3;
@@ -237,3 +224,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+const login = () => {
+  window.location.href = "/docs/login?idp=idir";
+};
+
+const copyToClipboard = (text) => {
+  const tempInput = document.createElement("input");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+};
