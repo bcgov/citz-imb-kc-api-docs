@@ -28,9 +28,9 @@
 }
 
 .module-arrow-svg {
-  display: none;
+  display: block;
 }
 
 .module-arrow-svg:first-child {
-  display: block;
+  display: none;
 }
