@@ -30,22 +30,31 @@ export const parseSchema = (
     const match = schemaPattern.exec(schemaFileContent);
 
     if (match) {
-      // Extract the properties string from the match, removing all newline characters
-      const propertiesString = match[1].replace(/\s+/g, " ");
+      // Extract the properties string from the match
+      const propertiesString = match[1];
 
-      // Split the string by commas to get individual properties
-      const schemaProperties = propertiesString.split(/,(?=[^,]*?:)/);
+      // Regular expression to match property names within the schema
+      // Looks for any word character sequences that are preceded by a space (or start of line) and followed by a colon
+      const propertyRegex = /(?<=\s|^)(\w+)\s*:/g;
+      let propertiesMatch;
+      const schemaProperties = [];
 
-      schemaProperties.forEach((prop) => {
-        // Extract the key for each property
-        const [key] = prop.split(/:\s*/);
+      // Use the regex to find all matches for property names within the properties string
+      while (
+        (propertiesMatch = propertyRegex.exec(propertiesString)) !== null
+      ) {
+        schemaProperties.push(propertiesMatch[1]); // Add the property name to the schemaProperties array
+      }
 
-        // Clean up the key
-        const param = key.trim();
-
+      // Process each property found by the regex
+      schemaProperties.forEach((param) => {
         const properties = parseSchemaProperty(schema, param, customSchemas);
-        if (properties) params[param] = properties;
-        else params[param] = { required: true, type: "string" };
+        if (properties) {
+          params[param] = properties;
+        } else {
+          // Default to string type if the property type cannot be determined
+          params[param] = { required: true, type: "string" };
+        }
       });
     }
   } else {
