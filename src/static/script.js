@@ -67,12 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const svgs = this.querySelectorAll(".module-arrow-svg");
 
       // Toggle details visibility
-      let isDisplayed = details.style.display === "none";
+      let isDisplayed = details.style.display === "block";
       details.style.display = isDisplayed ? "none" : "block";
 
       // Switch SVG visibility
-      svgs[0].style.display = isDisplayed ? "block" : "none";
-      svgs[1].style.display = isDisplayed ? "none" : "block";
+      svgs[0].style.display = isDisplayed ? "none" : "block";
+      svgs[1].style.display = isDisplayed ? "block" : "none";
     });
   });
 
