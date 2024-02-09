@@ -9,3 +9,7 @@
 .module-section {
   margin-bottom: 45px;
 }
+
+.module-details {
+  display: "block";
+}

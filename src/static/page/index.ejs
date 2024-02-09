@@ -8,7 +8,7 @@
       <!-- Module Header -->
       <%- include('./module-header/index.ejs', { moduleName, endpoints }); %>
 
-      <div id="module-details-<%= moduleName %>">
+      <div class="module-details" id="module-details-<%= moduleName %>">
 
         <!-- Each Endpoint in Module 'moduleName' -->
         <% endpoints[moduleName].endpoints.forEach(function(endpoint, index) { %>
