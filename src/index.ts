@@ -13,12 +13,16 @@ const DefaultAPIDocsConfig = {
   defaultResponses: [],
 };
 
-export const apiDocs = (app: Application, config: Config) => {
+export const apiDocs = (app: Application, config: Partial<Config>) => {
   // Add default config
-  const configuration = {
+  const configuration: Config = {
     ...DefaultAPIDocsConfig,
     ...config,
   };
   const endpoints = generateDocs(configuration);
-  app.use(BASE_PATH, apiDocsServe(app), apiDocsRender(endpoints, config.title));
+  app.use(
+    BASE_PATH,
+    apiDocsServe(app),
+    apiDocsRender(endpoints, configuration.title)
+  );
 };
