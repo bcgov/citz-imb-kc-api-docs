@@ -1,22 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var expandButtons = document.querySelectorAll(".endpoint-inner-expand-arrow");
   var executeButtons = document.querySelectorAll(".execute-button");
-
-  expandButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      var detailsId = this.getAttribute("data-index");
-      var details = document.getElementById("details-" + detailsId);
-      var svgs = this.querySelectorAll(".arrow-svg");
-
-      // Toggle details visibility
-      var isDisplayed = details.style.display === "block";
-      details.style.display = isDisplayed ? "none" : "block";
-
-      // Switch SVG visibility
-      svgs[0].style.display = isDisplayed ? "block" : "none";
-      svgs[1].style.display = isDisplayed ? "none" : "block";
-    });
-  });
 
   executeButtons.forEach(function (button) {
     button.addEventListener("click", function () {
@@ -151,13 +134,27 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-const copyToClipboard = (text) => {
-  const tempInput = document.createElement("input");
-  tempInput.value = text;
-  document.body.appendChild(tempInput);
-  tempInput.select();
-  document.execCommand("copy");
-  document.body.removeChild(tempInput);
+const setLoadingText = (button, loadingText, originalText) => {
+  let count = 0;
+  const maxDots = 3;
+  const intervalId = setInterval(() => {
+    if (count > maxDots) {
+      button.textContent = originalText;
+      clearInterval(intervalId);
+    } else {
+      button.textContent = `${loadingText} ${".".repeat(count)}`;
+      count++;
+    }
+  }, 200); // Change the dot every 500 milliseconds
+
+  return intervalId;
+};
+
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return undefined;
 };
 
 const syntaxHighlightJson = (json) => {
@@ -188,31 +185,4 @@ const syntaxHighlightJson = (json) => {
       return `<span class="${cls}">${match}</span>`;
     }
   );
-};
-
-const setLoadingText = (button, loadingText, originalText) => {
-  let count = 0;
-  const maxDots = 3;
-  const intervalId = setInterval(() => {
-    if (count > maxDots) {
-      button.textContent = originalText;
-      clearInterval(intervalId);
-    } else {
-      button.textContent = `${loadingText} ${".".repeat(count)}`;
-      count++;
-    }
-  }, 200); // Change the dot every 500 milliseconds
-
-  return intervalId;
-};
-
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-  return undefined;
-};
-
-const login = () => {
-  window.location.href = "/docs/login?idp=idir";
 };
