@@ -4,8 +4,7 @@ import { CustomControllerConfig, Method, Modules } from "../types";
 /**
  * Gets details from the router for each module,
  * including endpoints, their methods, and associated controllers
- * with dynamic paths based on controller names,
- * with special handling for 'dataController'.
+ * with dynamic paths based on controller names.
  */
 export const getRouterDetails = (
   modules: Modules,
@@ -14,7 +13,7 @@ export const getRouterDetails = (
 ) => {
   Object.keys(modules).forEach((module) => {
     const routerFileContent = fs.readFileSync(
-      `${modulesBasePath}${module}/router.ts`,
+      `${modulesBasePath}/${module}/router.ts`,
       "utf8"
     );
 
@@ -46,7 +45,7 @@ export const getRouterDetails = (
     const getControllerPath = (controllerName: string) => {
       const controllerImportPath = controllerPaths[controllerName];
       return controllerImportPath
-        ? `${modulesBasePath}${module}/${controllerImportPath.replace(
+        ? `${modulesBasePath}/${module}/${controllerImportPath.replace(
             /^\.\//,
             ""
           )}.ts`

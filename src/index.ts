@@ -5,15 +5,20 @@ import { Config } from "./types";
 import config from "./config";
 const { BASE_PATH } = config;
 
-export const apiDocs = (app: Application, config: Config) => {
-  const endpoints = generateDocs(config);
-  app.use(BASE_PATH, apiDocsServe(app), apiDocsRender(endpoints, config.title));
-};
-
-export const BaseAPIDocsConfig = {
+const DefaultAPIDocsConfig = {
   title: "API Documentation",
   expressFilePath: "src/express.ts",
-  modulesBasePath: "src/modules/",
+  modulesBasePath: "src/modules",
   modules: {},
   defaultResponses: [],
+};
+
+export const apiDocs = (app: Application, config: Config) => {
+  // Add default config
+  const configuration = {
+    ...DefaultAPIDocsConfig,
+    ...config,
+  };
+  const endpoints = generateDocs(configuration);
+  app.use(BASE_PATH, apiDocsServe(app), apiDocsRender(endpoints, config.title));
 };

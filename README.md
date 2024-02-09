@@ -14,13 +14,10 @@
 - Some schemas aren't parsed properly
 - Get path params and body in same way as query
 - Get and display responses
-- Clean up header styling
 - Clean up login button state
-- Make common controllers part of customControllers config option
 - Add entities
-- Add minimize button to module sections and minimize all button
+- Add minimize all button for modules
 - Describe syntax and structure requirements/limitations in README
-- Add BCSans font
 - Expand login to more than just IDIR
 
 <br />
@@ -91,16 +88,26 @@
 
 1. Add import `const { apiDocs } = require('@bcgov/citz-imb-kc-express-api-docs');` or `import { apiDocs } from '@bcgov/citz-imb-kc-express-api-docs';` to the top of the file that defines the express app. Add `apiDocs(app, API_DOCS_CONFIG);` below the definition of the express app, where `app` is defined by `express()`.
 
+*Note the default config options:*
+
+``` JavaScript
+// Automatically set, unless changed
+const DefaultAPIDocsConfig = {
+  title: "API Documentation",
+  expressFilePath: "src/express.ts",
+  modulesBasePath: "src/modules",
+  modules: {},
+  defaultResponses: [],
+};
+```
+
 *Example:*
 
 ```JavaScript
 import express from 'express';
-import { apiDocs, BaseAPIDocsConfig } from '@bcgov/citz-imb-kc-express-api-docs';
+import { apiDocs } from '@bcgov/citz-imb-kc-express-api-docs';
 
 const API_DOCS_CONFIG = {
-  ...BaseAPIDocsConfig,
-  expressFilePath: "src/express.ts", // Default set by BaseAPIDocsConfig
-  modulesBasePath: "src/modules/", // Default set by BaseAPIDocsConfig
   modules: {
     health: {
       description: 'Check application health.',
@@ -112,6 +119,12 @@ const API_DOCS_CONFIG = {
       type: 'string',
     },
   } as CustomSchemaConfig,
+  customControllers: {
+    'dataController.getAllItems': {
+      description: 'Returns all items.',
+      // optional add query property (see TypeScript types).
+    },
+  } as CustomControllersConfig,
   defaultResponses: [[503, 'An unexpected error occurred.']],
 };
 
@@ -221,13 +234,13 @@ These are the functions and types exported by the `@bcgov/citz-imb-kc-express-ap
 ```JavaScript
 import {
   apiDocs, // Initialization function to generate api docs.
-  BaseAPIDocsConfig, // Base config variables.
 } from '@bcgov/citz-imb-kc-express-api-docs';
 
 // TypeScript Types:
 import {
   Config, // Type for configuration options.
   CustomSchemaConfig, // Type for custom schema configuration options.
+  CustomControllerConfig, // Type for custom controller configuration options.
   QueryParamProperties, // Type for properties of query parameters.
 } from '@bcgov/citz-imb-kc-express';
 
@@ -246,6 +259,14 @@ const apiDocs: (app: Application, config: Config) => void;
 
 type CustomSchemaConfig = {
     [pattern: string]: QueryParamProperties;
+};
+type CustomControllerConfig = {
+  [controller: string]: {
+    description: string;
+    query?: {
+      [param: string]: QueryParamProperties;
+    };
+  };
 };
 type Config = {
     title: string;

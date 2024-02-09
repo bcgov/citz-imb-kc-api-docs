@@ -79,5 +79,15 @@ export const parseQueryParams = (
     });
   }
 
+  // Match non-destructured usage of getQuery
+  const nonDestructuredPattern =
+    /const\s+(\w+)\s*=\s*getQuery\(\s*req,\s*(\w+)/g;
+  let nonDestructuredMatch = nonDestructuredPattern.exec(functionString);
+  if (nonDestructuredMatch) {
+    schemaName = nonDestructuredMatch[2];
+    schemaPath = getSchemaPath(schemaName);
+    // queryParams are not added because they are unknown
+  }
+
   return { params: queryParams, schemaName, schemaPath };
 };
