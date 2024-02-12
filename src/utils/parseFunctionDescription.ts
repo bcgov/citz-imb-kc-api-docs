@@ -12,23 +12,15 @@ const getCommentAboveFunction = (fileContent: string, functionName: string) => {
   } else {
     // Try to match multi-line comment
     let regexMultiLine = new RegExp(
-      `([\\s\\S]*?)(\\/\\*\\*[^]*?\\*\\/)\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
+      `([\\s\\S]*?)(\\/\\*\\*[^]*?\\*\\/\\s*)?(?:export\\s+)?const\\s+${functionName}\\s*=`,
       "m"
     );
 
     let match = regexMultiLine.exec(fileContent);
 
-    if (match) {
-      // Extract the multi-line comment directly preceding the function definition
-      let precedingContent = match[1];
-      let lastCommentMatch = precedingContent.match(/(\/\*\*[^]*?\*\/)\s*$/);
-
-      if (lastCommentMatch) {
-        return lastCommentMatch[1].trim();
-      } else {
-        // If no preceding multi-line comment is found, return the comment found before the function
-        return match[2].trim();
-      }
+    if (match && match[2]) {
+      // If a comment block is found directly before the function, return it
+      return match[2].trim();
     }
   }
 
