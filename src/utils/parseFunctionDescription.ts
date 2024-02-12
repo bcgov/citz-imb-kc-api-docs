@@ -1,22 +1,30 @@
 const getCommentAboveFunction = (fileContent: string, functionName: string) => {
-  // Regex to find either a single-line comment or a multi-line comment block directly above a function
-  // This version is more restrictive to ensure no unrelated lines are captured between the comment and the function
-  const regex = new RegExp(
-    `(?:^|\\n\\s*\\n)(\\/\\/[^\\n]*\\n)?\\s*(\\/\\*[\\s\\S]*?\\*\\/)?\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
+  // First, try to find a single-line comment directly above the function definition
+  let regexSingleLine = new RegExp(
+    `(?:^|\\n)\\s*(\\/\\/[^\\n]*)\\n\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
     "m"
   );
+  let match = regexSingleLine.exec(fileContent);
 
-  // Execute the regex on the file content
-  const match = regex.exec(fileContent);
+  if (match && match[1]) {
+    // If a single-line comment is found, return it
+    return match[1].trim();
+  } else {
+    // If no single-line comment is found, look for a multi-line comment
+    let regexMultiLine = new RegExp(
+      `(?:^|\\n)\\s*(\\/\\*\\*[\\s\\S]*?\\*\\/)\\n\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
+      "m"
+    );
+    match = regexMultiLine.exec(fileContent);
 
-  // Determine which comment type was found, if any, and return it
-  const comment = match
-    ? match[1] || match[2]
-      ? (match[1] || match[2]).trim()
-      : ""
-    : "";
+    if (match && match[1]) {
+      // If a multi-line comment is found, return it
+      return match[1].trim();
+    }
+  }
 
-  return comment;
+  // If no comment is found, return an empty string
+  return "";
 };
 
 export const parseFunctionDescription = (

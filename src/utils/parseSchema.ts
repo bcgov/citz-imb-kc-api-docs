@@ -4,24 +4,22 @@ import { CustomSchemaConfig, QueryParamProperties } from "../types";
 import { parseSchemaProperty } from "./parseSchemaProperty";
 
 const extractObjectKeys = (schema: string): string[] => {
-  // Regular expression to match the object literal part of the schema
-  const regex = /z\.object\(\s*(\{[^}]*\})\s*\)/m;
+  // Attempt to match the content within z.object({...})
+  const regex = /z\.object\((\{[\s\S]*?\}\s*\))/m;
 
-  // Find the object literal in the schema string
   const match = schema.match(regex);
   if (!match) return [];
 
-  // Extract the object literal string
+  // Extract the matched object literal, including the first level of closing brace
   let objectLiteral = match[1];
 
-  // Replace property value with valid JSON for parsing
-  objectLiteral = objectLiteral.replace(/:\s*[^,}]+(?=,|})/g, ": null");
+  // Simplify the object literal for JSON parsing by replacing complex values with null
+  objectLiteral = objectLiteral.replace(/:\s*[^,}\n]+/g, ": null");
 
-  // Attempt to parse the modified string as JSON
   try {
+    // Parse the simplified object literal as JSON
     const parsedObject = JSON.parse(objectLiteral);
-
-    // Return the keys of the parsed object
+    // Return the keys from the parsed object
     return Object.keys(parsedObject);
   } catch (error) {
     console.error("Error parsing object keys:", error);
