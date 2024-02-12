@@ -4,8 +4,8 @@ export const parseFunctionDescription = (
 ) => {
   // Pattern to match block comments or single-line comments above the function declaration
   const pattern = new RegExp(
-    `\\/\\*\\*\\s*([\\s\\S]*?)\\*\\/\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
-    "gm"
+    `\\/\\*\\*\\s*\\*\\s*([^\\n\\r]+).*?\\*\\/\\s*(export\\s+)?const\\s+${functionName}\\s*=|\\/\\/\\s*([^\\n\\r]+)\\s*\\n\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
+    "gms"
   );
 
   const matches = [...fileContent.matchAll(pattern)];
