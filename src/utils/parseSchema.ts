@@ -27,7 +27,7 @@ export const parseSchema = (
   if (Object.keys(query.params).length === 0 && schema) {
     // Pattern to match the content inside z.object({...})
     const schemaPattern = /z\.object\(\{([\s\S]*?)\}\)/;
-    const match = schemaPattern.exec(schemaFileContent);
+    const match = schemaPattern.exec(schema);
 
     if (match) {
       // Extract the properties string from the match
