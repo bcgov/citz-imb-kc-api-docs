@@ -26,11 +26,8 @@ export const parseSchema = (
   // parse the entire schema to extract all query parameters.
   if (Object.keys(query.params).length === 0 && schema) {
     // Pattern to match the content inside z.object({...})
-    const schemaPattern = /z\.object\(\{([\s\S]*?)\}\)/;
+    const schemaPattern = /z\.object\s*\(\s*\{\s*([\s\S]*?)\s*\}\s*\)/;
     const match = schemaPattern.exec(schema);
-
-    console.log("Schema: ", schema);
-    console.log("Match: ", match);
 
     if (match) {
       // Extract the properties string from the match
@@ -38,7 +35,7 @@ export const parseSchema = (
 
       // Regular expression to match property names within the schema
       // Looks for any word character sequences that are preceded by a space (or start of line) and followed by a colon
-      const propertyRegex = /(?<=\s|^)(\w+)\s*:/g;
+      const propertyRegex = /(\w+)\s*:\s*/g;
       let propertiesMatch;
       const schemaProperties = [];
 
