@@ -49,10 +49,10 @@ export const parseSchema = (
   // If queryParams is empty but schemaName and schemaPath are provided,
   // parse the entire schema to extract all query parameters.
   if (Object.keys(query.params).length === 0 && schema) {
-    console.log(
-      `Properties of ${query.schemaName}: `,
-      extractObjectKeys(schema)
-    );
+    // console.log(
+    //   `Properties of ${query.schemaName}: `,
+    //   extractObjectKeys(schema)
+    // );
   } else {
     // Handling provided queryParams
     Object.keys(query.params).forEach((param) => {

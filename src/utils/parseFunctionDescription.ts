@@ -10,20 +10,24 @@ const getCommentAboveFunction = (fileContent: string, functionName: string) => {
     // If a single-line comment is found, return it
     return match[1].trim();
   } else {
-    // If no single-line comment is found, look for a multi-line comment
+    // Try to match multi-line comment
     let regexMultiLine = new RegExp(
-      `\\/\\*\\*[^]*?\\*\\/\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
+      `([\\s\\S]*?)(\\/\\*\\*[^]*?\\*\\/)\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
       "m"
     );
 
     let match = regexMultiLine.exec(fileContent);
 
     if (match) {
-      // If a multi-line comment is found, extract and return it
-      let commentMatch = match[0].match(/\/\*\*[^]*?\*\//);
-      if (commentMatch) {
-        // If a multi-line comment is found, return it
-        return commentMatch[0].trim();
+      // Extract the multi-line comment directly preceding the function definition
+      let precedingContent = match[1];
+      let lastCommentMatch = precedingContent.match(/(\/\*\*[^]*?\*\/)\s*$/);
+
+      if (lastCommentMatch) {
+        return lastCommentMatch[1].trim();
+      } else {
+        // If no preceding multi-line comment is found, return the comment found before the function
+        return match[2].trim();
       }
     }
   }
@@ -46,7 +50,7 @@ export const parseFunctionDescription = (
   );
 
   console.log(
-    `Comment for ${functionName}: `,
+    `\nComment for ${functionName}: `,
     getCommentAboveFunction(fileContent, functionName)
   );
 
