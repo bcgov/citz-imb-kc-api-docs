@@ -2,35 +2,34 @@ export const parseFunctionDescription = (
   fileContent: string,
   functionName: string
 ) => {
-  // Pattern to match block comments or single-line comments above the function declaration
-  const pattern = new RegExp(
-    `\\/\\*\\*\\s*\\*\\s*([^\\n\\r]+).*?\\*\\/\\s*(export\\s+)?const\\s+${functionName}\\s*=|\\/\\/\\s*([^\\n\\r]+)\\s*\\n\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
-    "gms"
+  const multiLineRegex = new RegExp(
+    `\\/\\*\\*([\\s\\S]*?)\\*\\/\\s*(export const|const) ${functionName}\\b`,
+    "m"
+  );
+  const singleLineRegex = new RegExp(
+    `//\\s*(.*?)\\s*\\n\\s*(export const|const) ${functionName}\\b`,
+    "m"
   );
 
-  const matches = [...fileContent.matchAll(pattern)];
+  let description;
 
-  if (matches.length > 0) {
-    // Use the last (closest) match
-    const lastMatch = matches[matches.length - 1];
-    const blockCommentContent = lastMatch[2]; // Group 2 captures block comment content
-    const singleLineCommentContent = lastMatch[3]; // Group 3 captures single-line comment content
-
-    if (blockCommentContent) {
-      // Process block comment
-      const lines = blockCommentContent.split("\n");
-      // Find the first line that is likely descriptive, ignoring lines that only contain '*', are annotations, or are empty
-      const descriptionLine = lines.find(
-        (line) => line.match(/^\s*\*\s+.+/) && !line.match(/^\s*\*\s+@/)
+  // Check multiline comments
+  const multiMatch = fileContent.match(multiLineRegex);
+  if (multiMatch && multiMatch[1]) {
+    const commentContent = multiMatch[1];
+    const descriptionLine = commentContent
+      .split("\n")
+      .find(
+        (line) => line.trim().startsWith("*") && !line.trim().startsWith("* @")
       );
+    description = descriptionLine?.replace(/\* /, "").trim();
+  }
 
-      if (descriptionLine) {
-        // Remove leading '*', whitespace, and return the description line
-        return descriptionLine.replace(/^\s*\*\s+/, "").trim();
-      }
-    } else if (singleLineCommentContent) {
-      // Use single-line comment content as description
-      return singleLineCommentContent.trim();
+  // Check single-line comments if no multiline comment was found
+  if (!description) {
+    const singleMatch = fileContent.match(singleLineRegex);
+    if (singleMatch && singleMatch[1]) {
+      description = singleMatch[1].trim();
     }
   }
 
