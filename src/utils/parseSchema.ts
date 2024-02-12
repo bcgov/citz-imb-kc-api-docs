@@ -11,6 +11,8 @@ const extractObjectKeys = (schema: string): string[] => {
   const match = schema.match(regex);
   if (!match) return [];
 
+  console.log(`Match: `, match);
+
   // Extract the object literal string
   let objectLiteral = match[1];
 

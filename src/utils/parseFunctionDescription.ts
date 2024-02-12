@@ -1,16 +1,24 @@
 const getCommentAboveFunction = (fileContent: string, functionName: string) => {
-  // Regex to find the comment block above a function
-  // This regex is more specific to avoid capturing content beyond the immediate comment block above the function
+  // Regex to find a single-line comment or a multi-line comment block above a function
+  // It first tries to match a single-line comment, and if not found, looks for a multi-line comment
   const regex = new RegExp(
-    `(?:^|\\n\\s*\\n)(\\/\\*[\\s\\S]*?\\*\\/)\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
+    `(?:^|\\n)\\s*((?:\\/\\/.*\\n)+)?\\s*(\\/\\*[\\s\\S]*?\\*\\/)?\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
     "m"
   );
 
   // Execute the regex on the file content
   const match = regex.exec(fileContent);
 
-  // If a match is found, return the comment block, otherwise return an empty string
-  return match ? match[1] : "";
+  // Determine which comment type was found, if any
+  const comment = match
+    ? match[1]
+      ? match[1].trim()
+      : match[2]
+      ? match[2].trim()
+      : ""
+    : "";
+
+  return comment;
 };
 
 export const parseFunctionDescription = (
