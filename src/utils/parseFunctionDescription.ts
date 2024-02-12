@@ -2,7 +2,7 @@ const getCommentAboveFunction = (fileContent: string, functionName: string) => {
   // Regex to find the comment block above a function
   // This regex is more specific to avoid capturing content beyond the immediate comment block above the function
   const regex = new RegExp(
-    `(\\/\\*[\\s\\S]*?\\*\\/)\\s*(export\\s+)?const\\s+${functionName}\\s*=\\s*\\([^\\)]*\\)\\s*=>`,
+    `(?:^|\\n\\s*\\n)(\\/\\*[\\s\\S]*?\\*\\/)\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
     "m"
   );
 
