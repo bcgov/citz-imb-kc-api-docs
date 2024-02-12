@@ -12,14 +12,19 @@ const getCommentAboveFunction = (fileContent: string, functionName: string) => {
   } else {
     // If no single-line comment is found, look for a multi-line comment
     let regexMultiLine = new RegExp(
-      `(?:^|\\n)\\s*(\\/\\*\\*[\\s\\S]*?\\*\\/)\\n\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
+      `\\/\\*\\*[^]*?\\*\\/\\s*(?:export\\s+)?const\\s+${functionName}\\s*=`,
       "m"
     );
-    match = regexMultiLine.exec(fileContent);
 
-    if (match && match[1]) {
-      // If a multi-line comment is found, return it
-      return match[1].trim();
+    let match = regexMultiLine.exec(fileContent);
+
+    if (match) {
+      // If a multi-line comment is found, extract and return it
+      let commentMatch = match[0].match(/\/\*\*[^]*?\*\//);
+      if (commentMatch) {
+        // If a multi-line comment is found, return it
+        return commentMatch[0].trim();
+      }
     }
   }
 
