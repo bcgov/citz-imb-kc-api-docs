@@ -29,34 +29,7 @@ export const parseSchema = (
     const schemaPattern = /\b(\w+)\b\s*:/g;
     const match = schemaPattern.exec(schema);
 
-    if (match) {
-      // Extract the properties string from the match
-      const propertiesString = match[1];
-
-      // Regular expression to match property names within the schema
-      // Looks for any word character sequences that are preceded by a space (or start of line) and followed by a colon
-      const propertyRegex = /(\w+)\s*:\s*/g;
-      let propertiesMatch;
-      const schemaProperties = [];
-
-      // Use the regex to find all matches for property names within the properties string
-      while (
-        (propertiesMatch = propertyRegex.exec(propertiesString)) !== null
-      ) {
-        schemaProperties.push(propertiesMatch[1]); // Add the property name to the schemaProperties array
-      }
-
-      // Process each property found by the regex
-      schemaProperties.forEach((param) => {
-        const properties = parseSchemaProperty(schema, param, customSchemas);
-        if (properties) {
-          params[param] = properties;
-        } else {
-          // Default to string type if the property type cannot be determined
-          params[param] = { required: true, type: "string" };
-        }
-      });
-    }
+    console.log("Match: ", match);
   } else {
     // Handling provided queryParams
     Object.keys(query.params).forEach((param) => {
