@@ -5,13 +5,11 @@ import { parseSchemaProperty } from "./parseSchemaProperty";
 
 const extractObjectKeys = (schema: string): string[] => {
   // Regular expression to match the object literal part of the schema
-  const regex = /z\.object\((\{[\s\S]*?\})\)/m;
+  const regex = /z\.object\(\s*(\{[^}]*\})\s*\)/m;
 
   // Find the object literal in the schema string
   const match = schema.match(regex);
   if (!match) return [];
-
-  console.log(`Match: `, match);
 
   // Extract the object literal string
   let objectLiteral = match[1];
