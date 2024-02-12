@@ -29,6 +29,9 @@ export const parseSchema = (
     const schemaPattern = /z\.object\(\{([\s\S]*?)\}\)/;
     const match = schemaPattern.exec(schema);
 
+    console.log("Schema: ", schema);
+    console.log("Match: ", match);
+
     if (match) {
       // Extract the properties string from the match
       const propertiesString = match[1];
