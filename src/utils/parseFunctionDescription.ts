@@ -1,8 +1,8 @@
 const getCommentAboveFunction = (fileContent: string, functionName: string) => {
   // Regex to find the comment block above a function
-  // This regex handles multi-line comments that directly precede the function, making 'export' optional
+  // This regex is more specific to avoid capturing content beyond the immediate comment block above the function
   const regex = new RegExp(
-    `(\\/\\*[\\s\\S]*?\\*\\/)\\s*(export\\s+)?const\\s+${functionName}\\s*=`,
+    `(\\/\\*[\\s\\S]*?\\*\\/)\\s*(export\\s+)?const\\s+${functionName}\\s*=\\s*\\([^\\)]*\\)\\s*=>`,
     "m"
   );
 
@@ -26,7 +26,10 @@ export const parseFunctionDescription = (
     "m"
   );
 
-  console.log("Comment: ", getCommentAboveFunction(fileContent, functionName));
+  console.log(
+    `Comment for ${functionName}: `,
+    getCommentAboveFunction(fileContent, functionName)
+  );
 
   let description;
 
