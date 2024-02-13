@@ -17,13 +17,14 @@ export const getZodObjectProperties = (schema: string): string[] => {
   // Set each property's value to null
   objectBody = objectBody.replace(/:\s*[^,]+/g, ": null");
 
-  console.log(objectBody);
-
   // Ensuring the string is JSON-compliant by adding double quotes around property names
   const jsonCompliantString = `{${objectBody.replace(
     /(\w+)(?=\s*:)/g,
     '"$1"'
   )}}`;
+
+  console.log(jsonCompliantString);
+  console.log(jsonCompliantString.replaceAll(" ", "_"));
 
   // Parse the modified string into an object
   let parsedObject;
