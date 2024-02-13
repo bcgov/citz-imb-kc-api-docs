@@ -1,8 +1,9 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-COMMIT_MSG_FILE=$1
-COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
+# Retrieve the last commit message
+COMMIT_MSG=$(git log -1 --pretty=%B)
+
 VERSION_CHANGE_REGEX="^(Patch|Minor|Major)"
 
 if ! echo "$COMMIT_MSG" | grep -E "$VERSION_CHANGE_REGEX"; then
@@ -10,19 +11,19 @@ if ! echo "$COMMIT_MSG" | grep -E "$VERSION_CHANGE_REGEX"; then
   exit 1
 fi
 
-# Execute the Node.js script with the path to the temporary commit message file
-node scripts/pre-commit-version-change.mjs "$COMMIT_MSG_FILE"
+# Execute the Node.js script. Pass the commit message as an argument if needed.
+node scripts/pre-commit-version-change.mjs "$COMMIT_MSG"
 
 # Capture the exit status of the Node.js script
 EXIT_STATUS=$?
 
 # Check if the Node.js script executed successfully
 if [ $EXIT_STATUS -eq 0 ]; then
-  # Add package.json to the staging area
+  # Stage the package.json changes
   git add package.json
-
-  # Use --no-verify to bypass the hooks for the automatic commit
-  git commit --no-verify -m "Auto-commit: Version bump in package.json"
+  
+  # Commit the changes with --no-verify to bypass the hooks
+  git commit --no-verify -m "Version bump in package.json"
 fi
 
 # Exit with the captured exit status
