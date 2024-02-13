@@ -24,7 +24,10 @@ export const getCommentText = (comment: string) => {
     );
     // Return the description line if found, trimming any leading "*" and spaces
     if (descriptionLine) {
-      return descriptionLine.replace(/^\*\s*/, "").trim();
+      return descriptionLine
+        .trim()
+        .replace(/^\*\s*/, "")
+        .trim();
     }
   }
 

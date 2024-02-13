@@ -8,12 +8,17 @@ export const getZodObjectProperties = (schema: string): string[] => {
   if (!schema.trim().startsWith("z.object")) return [];
 
   // Extract the object definition
-  const objectBodyMatch = schema.match(/\{([^}]+)\}/);
-  if (!objectBodyMatch) return [];
-  let objectBody = objectBodyMatch[1];
+  const startIndex = schema.indexOf("{") + 1; // +1 to skip the '{' itself
+  const endIndex = schema.indexOf("}", startIndex); // Start search from startIndex to find the corresponding '}'
+  if (startIndex === 0 || endIndex === -1) return []; // Return empty if '{' or '}' not found
+  let objectBody = schema.substring(startIndex, endIndex).trim();
+
+  console.log("Object body: ", objectBody);
 
   // Set each property's value to null
   objectBody = objectBody.replace(/:\s*[^,]+/g, ": null");
+
+  console.log("Object body after replace: ", objectBody);
 
   // Ensuring the string is JSON-compliant by adding double quotes around property names
   const jsonCompliantString = `{${objectBody.replace(
