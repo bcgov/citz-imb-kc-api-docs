@@ -16,5 +16,11 @@ node scripts/pre-commit-version-change.mjs "$COMMIT_MSG_FILE"
 # Capture the exit status of the Node.js script
 EXIT_STATUS=$?
 
+# Check if the Node.js script executed successfully
+if [ $EXIT_STATUS -eq 0 ]; then
+  # Add package.json to the staging area
+  git add package.json
+fi
+
 # Exit with the captured exit status
 exit $EXIT_STATUS
