@@ -1,7 +1,10 @@
 /**
- * Parses file content in the form of a string to extract a given function.
+ * Get the function code from file content, given a function name.
+ * @param {string} fileContent - The file content to search.
+ * @param {string} functionName - The function to search for.
+ * @returns {string}
  */
-export const extractFunctionCode = (
+export const getFunctionCode = (
   fileContent: string,
   functionName: string
 ): string => {

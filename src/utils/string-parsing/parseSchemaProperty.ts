@@ -1,4 +1,4 @@
-import { CustomSchemaConfig, QueryParamProperties } from "../types";
+import { CustomSchemaConfig, QueryParamProperties } from "../../types";
 
 export const parseSchemaProperty = (
   schemaString: string,

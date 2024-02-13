@@ -1,7 +1,7 @@
 import { encodeJWT } from "./jwt";
 import qs from "qs";
 
-import config from "../config";
+import config from "../../config";
 const {
   KC_TOKEN_URL,
   BASE_PATH,

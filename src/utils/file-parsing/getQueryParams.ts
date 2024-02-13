@@ -1,9 +1,16 @@
 import path from "path";
-import { QueryParamProperties } from "../types";
+import { QueryParamProperties } from "../../types";
 
-export const parseQueryParams = (
+/**
+ * Get query params, schema name and path from a controller file content.
+ * @param {string} controllerFileContent - File content to search.
+ * @param {string} functionCode - Function code to search.
+ * @param {string} controllerPath - Path of controller file.
+ * @returns { params: Record<string, QueryParamProperties>, schemaName: string, schemaPath: string }
+ */
+export const getQueryParams = (
   controllerFileContent: string,
-  functionString: string,
+  functionCode: string,
   controllerPath: string
 ): {
   params: Record<string, QueryParamProperties>;
@@ -46,14 +53,14 @@ export const parseQueryParams = (
   // Match direct usage of req.query properties
   const directUsagePattern = /\breq\.query\.(\w+)/g;
   let match;
-  while ((match = directUsagePattern.exec(functionString)) !== null) {
+  while ((match = directUsagePattern.exec(functionCode)) !== null) {
     queryParams[match[1]] = { required: true, type: "string" };
   }
 
   // Match destructured usage of req.query
   const destructuredUsagePattern =
     /(?:const|let|var)\s+\{([^}]+)\}\s*=\s*req\.query/g;
-  while ((match = destructuredUsagePattern.exec(functionString)) !== null) {
+  while ((match = destructuredUsagePattern.exec(functionCode)) !== null) {
     const params = match[1]
       .split(",")
       .map((param) => param.trim().split("=")[0]);
@@ -67,7 +74,7 @@ export const parseQueryParams = (
   // Match usage of getQuery function with destructuring, capturing the schema name
   const getQueryPattern =
     /const\s+\{([^}]+)\}\s*=\s*getQuery\(\s*req,\s*(\w+)/g;
-  while ((match = getQueryPattern.exec(functionString)) !== null) {
+  while ((match = getQueryPattern.exec(functionCode)) !== null) {
     const params = match[1]
       .split(",")
       .map((param) => param.trim().split("=")[0]);
@@ -82,7 +89,7 @@ export const parseQueryParams = (
   // Match non-destructured usage of getQuery
   const nonDestructuredPattern =
     /const\s+(\w+)\s*=\s*getQuery\(\s*req,\s*(\w+)/g;
-  let nonDestructuredMatch = nonDestructuredPattern.exec(functionString);
+  let nonDestructuredMatch = nonDestructuredPattern.exec(functionCode);
   if (nonDestructuredMatch) {
     schemaName = nonDestructuredMatch[2];
     schemaPath = getSchemaPath(schemaName);

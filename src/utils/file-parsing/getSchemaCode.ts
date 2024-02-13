@@ -1,7 +1,10 @@
 /**
- * Parses file content in the form of a string to extract a given schema.
+ * Get the schema code from file content given a schema name.
+ * @param {string} fileContent - The file content to search.
+ * @param {string} schemaName - The schema name to search for.
+ * @returns {string}
  */
-export const extractSchemaCode = (
+export const getSchemaCode = (
   fileContent: string,
   schemaName: string
 ): string => {

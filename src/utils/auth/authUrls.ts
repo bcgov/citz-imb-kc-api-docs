@@ -1,7 +1,7 @@
-import { IdentityProvider } from "../types";
+import { IdentityProvider } from "../../types";
 import qs from "qs";
 
-import config from "../config";
+import config from "../../config";
 const {
   KC_AUTHORIZATION_URL,
   BASE_PATH,
