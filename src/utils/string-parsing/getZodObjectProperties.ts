@@ -8,14 +8,13 @@ export const getZodObjectProperties = (schema: string): string[] => {
   if (!schema.trim().includes(".object")) return [];
 
   // Extract the object definition
-  const startIndex = schema.indexOf("{") + 1; // +1 to skip the '{' itself
+  const startIndex = schema.indexOf("{");
   const endIndex = schema.indexOf("}", startIndex); // Start search from startIndex to find the corresponding '}'
-
-  console.log("Start: ", startIndex, ", ", schema.at(startIndex));
-  console.log("End: ", endIndex, ", ", schema.at(endIndex));
 
   if (startIndex === 0 || endIndex === -1) return []; // Return empty if '{' or '}' not found
   let objectBody = schema.substring(startIndex, endIndex).trim();
+
+  console.log(objectBody);
 
   // Set each property's value to null
   objectBody = objectBody.replace(/:\s*[^,]+/g, ": null");
