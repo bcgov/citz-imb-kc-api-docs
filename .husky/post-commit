@@ -1,6 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Check for the BYPASS_HOOK variable to bypass the hook
+if [ "$BYPASS_HOOK" = "true" ]; then
+  exit 0
+fi
+
 # Retrieve the last commit message
 COMMIT_MSG=$(git log -1 --pretty=%B)
 
@@ -22,8 +27,11 @@ if [ $EXIT_STATUS -eq 0 ]; then
   # Stage the package.json changes
   git add package.json
   
-  # Commit the changes with --no-verify to bypass the hooks
-  git commit --no-verify -m "Version bump in package.json"
+  # Use an environment variable to bypass the hook for the next commit
+  BYPASS_HOOK=true git commit -m "Version bump in package.json"
+
+  # Reset the BYPASS_HOOK variable
+  unset BYPASS_HOOK
 fi
 
 # Exit with the captured exit status
