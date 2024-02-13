@@ -4,9 +4,8 @@
  * @returns {string[]}
  */
 export const getZodObjectProperties = (schema: string): string[] => {
-  console.log("Schema: ", schema.trim());
-  // Check if the schema starts with "z.object"
-  if (!schema.trim().startsWith("z.object")) return [];
+  // Check if the schema includes ".object"
+  if (!schema.trim().includes(".object")) return [];
 
   // Extract the object definition
   const startIndex = schema.indexOf("{") + 1; // +1 to skip the '{' itself
