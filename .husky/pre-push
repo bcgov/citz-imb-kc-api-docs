@@ -1,3 +1,0 @@
-node scripts/pre-commit-version-change.mjs
-
-exit 1

@@ -1,0 +1,20 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
+VERSION_CHANGE_REGEX="^(Patch|Minor|Major)"
+
+if ! echo "$COMMIT_MSG" | grep -E "$VERSION_CHANGE_REGEX"; then
+  echo "Error: Commit message must start with 'Patch', 'Minor', or 'Major'."
+  exit 1
+fi
+
+# Execute the Node.js script with the path to the temporary commit message file
+node scripts/pre-commit-version-change.mjs "$COMMIT_MSG_FILE"
+
+# Capture the exit status of the Node.js script
+EXIT_STATUS=$?
+
+# Exit with the captured exit status
+exit $EXIT_STATUS

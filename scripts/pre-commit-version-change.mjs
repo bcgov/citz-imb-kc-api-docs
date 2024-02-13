@@ -1,29 +1,24 @@
-import readline from "readline";
+import fs from "fs";
 import { execSync } from "child_process";
 import { resolve } from "path";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// Check commit message for version change type
+const checkCommitMessageForVersionChange = (commitMsgPath) => {
+  const commitMsg = fs.readFileSync(commitMsgPath, "utf8");
+  const versionChangeRegex = /^(patch|minor|major)\b/i;
 
-// Ask the user for version change type
-const askVersionChange = () =>
-  new Promise((resolve) => {
-    rl.question(
-      "Enter version change type (patch, minor, major): ",
-      (answer) => {
-        if (["patch", "minor", "major"].includes(answer)) {
-          resolve(answer);
-        } else {
-          console.log(
-            'Invalid input. Please enter "patch", "minor", or "major".'
-          );
-          process.exit(1);
-        }
-      }
+  const matchResult = commitMsg.match(versionChangeRegex);
+  if (!matchResult) {
+    console.error(
+      'Commit message must start with "Patch", "Minor", or "Major" to indicate the version change type.'
     );
-  });
+    process.exit(1); // Abort the commit
+  }
+
+  const versionChangeType = matchResult[0].toLowerCase();
+
+  return versionChangeType;
+};
 
 // Execute bump-version.js script
 const executeBumpVersion = (versionChange) => {
@@ -32,10 +27,22 @@ const executeBumpVersion = (versionChange) => {
 };
 
 // Main function to run the pre-commit hook logic
-const main = async () => {
-  const versionChange = await askVersionChange();
-  executeBumpVersion(versionChange);
-  rl.close();
+const main = () => {
+  // The path to the temporary file that contains the commit message is passed by Git to the pre-commit hook script
+  const commitMsgPath = process.argv[2];
+
+  if (!commitMsgPath) {
+    console.error("Error: Commit message file path not provided.");
+    process.exit(1);
+  }
+
+  try {
+    const versionChange = checkCommitMessageForVersionChange(commitMsgPath);
+    executeBumpVersion(versionChange);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
 };
 
 main();
