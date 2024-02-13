@@ -18,7 +18,15 @@ export const getZodObjectProperties = (schema: string): string[] => {
   objectBody = objectBody.replace(/:\s*[^,]+/g, ": null");
 
   // Ensuring the string is JSON-compliant by adding double quotes around property names
-  const jsonCompliantString = `${objectBody.replace(/(\w+)(?=\s*:)/g, '"$1"')}`;
+  let jsonCompliantString = `${objectBody.replace(/(\w+)(?=\s*:)/g, '"$1"')}`;
+
+  // Replace sequences of whitespace characters longer than 1 with an empty string
+  jsonCompliantString = jsonCompliantString.replace(/\s{2,}/g, "");
+
+  // Replace newline characters with an empty string
+  jsonCompliantString = jsonCompliantString.replace(/\r?\n/g, "");
+
+  console.log(jsonCompliantString);
 
   // Parse the modified string into an object
   let parsedObject;
