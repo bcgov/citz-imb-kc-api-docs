@@ -59,6 +59,7 @@ export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 export type ParamProperties = {
   required: boolean;
   type: string;
+  description?: string;
 };
 
 export type Endpoint = {

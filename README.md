@@ -305,6 +305,7 @@ type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 type ParamProperties = {
     required: boolean;
     type: string; // "string" | "number" | "boolean"
+    description?: string;
 };
 type Endpoint = {
     route: string;
