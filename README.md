@@ -11,8 +11,7 @@
 ## Backlog:
 
 - Make generateDocs work with Vanilla vs TypeScript and Development vs Production
-- Some schemas aren't parsed properly
-- Get path params and body in same way as query
+- Add support for body
 - Get and display responses
 - Clean up login button state
 - Add entities

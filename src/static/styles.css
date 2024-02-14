@@ -8,6 +8,7 @@ body {
   font-family: BC Sans, Calibri, Arial, sans-serif;
   font-size: var(--font-size);
   color: var(--text-color);
+  background-color: var(--light-grey);
 }
 
 a {

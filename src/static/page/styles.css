@@ -3,9 +3,12 @@
 
 .page-container {
   padding: 8px;
-  background-color: var(--light-grey);
 }
 
 .module-section {
-  margin-bottom: 45px;
+  margin-bottom: 25px;
+  padding: 0 14px;
+  background-color: var(--white);
+  border: 1px solid var(--black);
+  border-radius: 4px;
 }

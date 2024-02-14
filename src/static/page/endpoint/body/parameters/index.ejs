@@ -7,8 +7,17 @@
   <!-- Section Body -->
   <div class="endpoint-block-details-section-container">
 
-    <!-- Path Params -->
     <% var routePathParams = endpoint.controller.pathParams; %>
+    <% var routeQueryParams = endpoint.controller.query; %>
+
+    <!-- No Params -->
+    <% if (!routePathParams || (routePathParams && Object.keys(routePathParams).length === 0)) { %>
+      <% if (!routeQueryParams || (routeQueryParams && Object.keys(routeQueryParams).length === 0)) { %>
+        <p class="param-text font-small">No parameters are required to execute this endpoint.</p>
+      <% } %>
+    <% } %>
+
+    <!-- Path Params -->
     <% if (routePathParams) { %>
       <% Object.entries(routePathParams).forEach(function([paramName, paramDetails]) { %>
         <!-- Summary: Required and Type -->
@@ -26,7 +35,6 @@
     <% } %>
 
     <!-- Query Params -->
-    <% var routeQueryParams = endpoint.controller.query; %>
     <% if (routeQueryParams) { %>
       <% Object.entries(routeQueryParams).forEach(function([paramName, paramDetails]) { %>
         <!-- Summary: Required and Type -->

@@ -96,8 +96,6 @@ export const getRouterDetails = (
     // Split the normalized content by 'router.route', considering potential whitespace and line breaks
     const routeBlocks = normalizedContent.split(/\s*router\.route\s*/).slice(1);
 
-    console.log(routeBlocks);
-
     routeBlocks.forEach((block) => {
       // Prepend 'router.route' since we split on it, unless the block is empty or whitespace only
       if (!block.trim()) return;
