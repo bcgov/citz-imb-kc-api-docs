@@ -59,64 +59,72 @@ export const getRouterDetails = (
     while ((match = methodRegex.exec(routerFileContent)) !== null) {
       const [_, httpMethod, routePath, controllerName] = match;
 
-      if (customControllerNames.includes(controllerName)) {
-        // Controller name is included in customControllers config.
-        modules[module].endpoints.push({
-          route: routePath,
-          method: httpMethod.toUpperCase() as Method,
-          description: customControllers[controllerName].description,
-          controller: {
+      // Determine if the controllerName is in the customControllers list
+      const isCustomController = customControllerNames.includes(controllerName);
+
+      // If controllerName is a custom controller, use the customControllers config
+      // Otherwise, use the default logic to determine the controller path
+      const controllerConfig = isCustomController
+        ? {
             name: controllerName,
             path: "",
             query: customControllers[controllerName]?.query ?? {},
-          },
-        });
-      } else {
-        // Else
-        modules[module].endpoints.push({
-          route: routePath,
-          method: httpMethod.toUpperCase() as Method,
-          controller: {
+          }
+        : {
             name: controllerName,
             path: getControllerPath(controllerName),
-          },
-        });
-      }
+          };
+
+      // Push the endpoint configuration for this method
+      modules[module].endpoints.push({
+        route: routePath,
+        method: httpMethod.toUpperCase() as Method,
+        description: isCustomController
+          ? customControllers[controllerName].description
+          : "",
+        controller: controllerConfig,
+      });
     }
 
     // Syntax: router.route(...).<method>(...)
     const routeRegex =
-      /router\.route\(['"]([^'"]+)['"]\)\.([\s\S]+?)(?=\n\s*router|$)/g;
+      /router\.route\(['"]([^'"]+)['"]\)([\s\S]+?)(?=\n\s*router\.route|$)/g;
     while ((match = routeRegex.exec(routerFileContent)) !== null) {
       const baseRoute = match[1];
-      const methodBlock = match[2];
-      const methodMatchRegex = /(get|post|patch|put|delete)\(\s*(\w+)/g;
+      const chainedMethods = match[2];
+
+      const methodMatchRegex = /\.(get|post|patch|put|delete)\(\s*([\w.]+)/g;
       let methodMatch;
-      while ((methodMatch = methodMatchRegex.exec(methodBlock)) !== null) {
+
+      while ((methodMatch = methodMatchRegex.exec(chainedMethods)) !== null) {
         const [_, httpMethod, controllerName] = methodMatch;
-        if (customControllerNames.includes(controllerName)) {
-          // Controller name is included in customControllers config.
-          modules[module].endpoints.push({
-            route: baseRoute,
-            method: httpMethod.toUpperCase() as Method,
-            description: customControllers[controllerName].description,
-            controller: {
+
+        // Determine if the controllerName is in the customControllers list
+        const isCustomController =
+          customControllerNames.includes(controllerName);
+
+        // If controllerName is a custom controller, use the customControllers config
+        // Otherwise, use the default logic to determine the controller path
+        const controllerConfig = isCustomController
+          ? {
               name: controllerName,
               path: "",
               query: customControllers[controllerName]?.query ?? {},
-            },
-          });
-        } else {
-          // Else
-          modules[module].endpoints.push({
-            route: baseRoute,
-            method: httpMethod.toUpperCase() as Method,
-            controller: {
+            }
+          : {
               name: controllerName,
               path: getControllerPath(controllerName),
-            },
-          });
-        }
+            };
+
+        // Push the endpoint configuration for this method
+        modules[module].endpoints.push({
+          route: baseRoute,
+          method: httpMethod.toUpperCase() as Method,
+          description: isCustomController
+            ? customControllers[controllerName].description
+            : "",
+          controller: controllerConfig,
+        });
       }
     }
   });
