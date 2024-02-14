@@ -90,6 +90,8 @@ export const getRouterDetails = (
     // Split the file content by 'router.route', ignoring the first split as it's before the first route
     const routeBlocks = routerFileContent.split(/router\.route/).slice(1);
 
+    console.log(routeBlocks);
+
     routeBlocks.forEach((block) => {
       // Prepend 'router.route' since we split on it
       const fullBlock = `router.route${block}`;
