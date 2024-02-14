@@ -87,16 +87,18 @@ export const getRouterDetails = (
     }
 
     // Syntax: router.route(...).<method>(...)
-    // Normalize the content by removing multiline comments as an example
-    const normalizedContent = routerFileContent.replace(
-      /\/\*[\s\S]*?\*\//g,
-      ""
-    );
+    // Normalize the content by removing multiline comments, newlines and spaces
+    const normalizedContent = routerFileContent
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/[\r\n]+/g, " ")
+      .replaceAll(" ", "");
 
     // Split the normalized content by 'router.route', considering potential whitespace and line breaks
     const routeBlocks = normalizedContent.split(/\s*router\.route\s*/).slice(1);
 
-    routeBlocks.forEach((block, index) => {
+    console.log(routeBlocks);
+
+    routeBlocks.forEach((block) => {
       // Prepend 'router.route' since we split on it, unless the block is empty or whitespace only
       if (!block.trim()) return;
 
