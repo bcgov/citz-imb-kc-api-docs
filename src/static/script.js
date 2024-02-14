@@ -140,7 +140,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (routeParams) {
         routeParams.forEach(function (param) {
           const inputElement = document.getElementById(
-            "input-" + module + "-" + endpointIndex + "-" + param.substring(1)
+            "pathParam-input-" +
+              module +
+              "-" +
+              endpointIndex +
+              "-" +
+              param.substring(1)
           );
           if (inputElement && inputElement.value) {
             route = route.replace(param, inputElement.value);

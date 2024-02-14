@@ -6,15 +6,23 @@
 
   <!-- Section Body -->
   <div class="endpoint-block-details-section-container">
+
     <!-- Path Params -->
-    <% var routePathParams = endpoint.route.match(/:[a-zA-Z]+/g); %>
+    <% var routePathParams = endpoint.controller.pathParams; %>
     <% if (routePathParams) { %>
-        <% routePathParams.forEach(function(param) { %>
-            <p class="param-text font-small">(path param) <span class="required-param">* required</span></p>
-            <label for="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>"><%= param.substring(1) %>:</label>
-            <input class="param-input" type="text" id="<%= 'input-' + moduleName + '-' + index + '-' + param.substring(1) %>" placeholder="<%= param.substring(1) %>">
-            <br /><br />
-        <% }); %>
+      <% Object.entries(routePathParams).forEach(function([paramName, paramDetails]) { %>
+        <!-- Summary: Required and Type -->
+        <% if(paramDetails.required) { %>
+          <p class="param-text font-small">(path param) <%= paramDetails.type %> <span class="required-param">* required</span></p>
+        <% } else { %>
+          <p class="param-text font-small">(path param) <%= paramDetails.type %> <span class="required-param">optional</span></p>
+        <% } %>
+
+        <!-- Input -->
+        <label for="<%= 'pathParam-input-' + moduleName + '-' + index + '-' + paramName %>"><%= paramName %>:
+        <input class="param-input" type="text" id="<%= 'pathParam-input-' + moduleName + '-' + index + '-' + paramName %>" placeholder="<%= paramName %>">
+        <br /><br />
+      <% }); %>
     <% } %>
 
     <!-- Query Params -->

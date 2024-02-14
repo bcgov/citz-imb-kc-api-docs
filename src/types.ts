@@ -66,7 +66,9 @@ export type Endpoint = {
     query?: {
       [param: string]: ParamProperties;
     };
-    querySchema?: z.ZodSchema<unknown>;
+    pathParams?: {
+      [param: string]: ParamProperties;
+    };
   };
 };
 

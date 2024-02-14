@@ -5,6 +5,7 @@ import {
   getFunctionCode,
   getCommentAboveFunction,
   getQueryParams,
+  getPathParams,
 } from "./file-parsing";
 import { getCommentText } from "./string-parsing";
 
@@ -34,6 +35,23 @@ export const getControllerDetails = (
           controllerFileContent,
           endpoint.controller.name
         );
+
+        // Get path params
+        const pathParams = getPathParams(
+          controllerFileContent,
+          functionCode,
+          modules[module].endpoints[index].controller.path
+        );
+
+        // Set path properties on controller data
+        if (pathParams.schemaName && pathParams.schemaPath) {
+          const params = parseSchema(pathParams, customSchemas);
+          if (params)
+            modules[module].endpoints[index].controller.pathParams = params;
+        } else {
+          modules[module].endpoints[index].controller.pathParams =
+            pathParams.params;
+        }
 
         // Get query params
         const query = getQueryParams(

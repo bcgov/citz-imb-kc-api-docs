@@ -2,13 +2,13 @@ import path from "path";
 import { ParamProperties } from "../../types";
 
 /**
- * Get query params, schema name and path from a controller file content.
+ * Get path params, schema name and path from a controller file content.
  * @param {string} controllerFileContent - File content to search.
  * @param {string} functionCode - Function code to search.
  * @param {string} controllerPath - Path of controller file.
  * @returns { params: Record<string, ParamProperties>, schemaName: string, schemaPath: string }
  */
-export const getQueryParams = (
+export const getPathParams = (
   controllerFileContent: string,
   functionCode: string,
   controllerPath: string
@@ -17,7 +17,7 @@ export const getQueryParams = (
   schemaName?: string;
   schemaPath?: string;
 } => {
-  const queryParams: Record<string, ParamProperties> = {};
+  const pathParams: Record<string, ParamProperties> = {};
 
   // Initialize a map to hold schema names and their import paths
   const schemaPaths: { [key: string]: string } = {};
@@ -50,34 +50,34 @@ export const getQueryParams = (
       : "";
   };
 
-  // Match direct usage of req.query properties
-  // (ex: const name = req.query.name;)
-  const directUsagePattern = /\breq\.query\.(\w+)/g;
+  // Match direct usage of req.params properties
+  // // (ex: const name = req.params.name;)
+  const directUsagePattern = /\breq\.params\.(\w+)/g;
   let match;
   while ((match = directUsagePattern.exec(functionCode)) !== null) {
-    queryParams[match[1]] = { required: true, type: "string" };
+    pathParams[match[1]] = { required: true, type: "string" };
   }
 
-  // Match destructured usage of req.query
-  // (ex: const { id, name } = req.query;)
+  // Match destructured usage of req.params
+  // (ex: const { id, name } = req.params;)
   const destructuredUsagePattern =
-    /(?:const|let|var)\s+\{([^}]+)\}\s*=\s*req\.query/g;
+    /(?:const|let|var)\s+\{([^}]+)\}\s*=\s*req\.params/g;
   while ((match = destructuredUsagePattern.exec(functionCode)) !== null) {
     const params = match[1]
       .split(",")
       .map((param) => param.trim().split("=")[0]);
     params.forEach((param) => {
-      if (param) queryParams[param] = { required: true, type: "string" };
+      if (param) pathParams[param] = { required: true, type: "string" };
     });
   }
 
   let schemaName, schemaPath;
 
-  // Match usage of getQuery function with destructuring, capturing the schema name
-  // (ex: const { id, name } = getQuery(req, schema);)
-  const getQueryPattern =
-    /const\s+\{([^}]+)\}\s*=\s*getQuery\(\s*req,\s*(\w+)/g;
-  while ((match = getQueryPattern.exec(functionCode)) !== null) {
+  // Match usage of getParams function with destructuring, capturing the schema name
+  // (ex: const { id, name } = getParams(req, schema);)
+  const getParamsPattern =
+    /const\s+\{([^}]+)\}\s*=\s*getParams\(\s*req,\s*(\w+)/g;
+  while ((match = getParamsPattern.exec(functionCode)) !== null) {
     const params = match[1]
       .split(",")
       .map((param) => param.trim().split("=")[0]);
@@ -85,20 +85,20 @@ export const getQueryParams = (
     schemaPath = getSchemaPath(schemaName);
 
     params.forEach((param) => {
-      if (param) queryParams[param] = { required: true, type: "string" };
+      if (param) pathParams[param] = { required: true, type: "string" };
     });
   }
 
-  // Match non-destructured usage of getQuery
-  // (ex: const user = getQuery(req, schema);)
+  // Match non-destructured usage of getParams
+  // (ex: const user = getParams(req, schema);)
   const nonDestructuredPattern =
-    /const\s+(\w+)\s*=\s*getQuery\(\s*req,\s*(\w+)/g;
+    /const\s+(\w+)\s*=\s*getParams\(\s*req,\s*(\w+)/g;
   let nonDestructuredMatch = nonDestructuredPattern.exec(functionCode);
   if (nonDestructuredMatch) {
     schemaName = nonDestructuredMatch[2];
     schemaPath = getSchemaPath(schemaName);
-    // queryParams are not added because they are unknown
+    // pathParams are not added because they are unknown
   }
 
-  return { params: queryParams, schemaName, schemaPath };
+  return { params: pathParams, schemaName, schemaPath };
 };
