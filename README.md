@@ -87,6 +87,13 @@
 
 ## Basic Setup Guide
 
+**Requirements:**
+
+- Endpoints must be organized by module (by default this means a `src/modules` directory).
+- Modules must be defined as a base route in express file such as `health` module as `app.use('/health', router);`
+- Each module must have a single `router.ts` file (controllers can be in separate files).
+- Use of module type `imports` instead of commonjs type `require`.
+
 1. Add import `const { apiDocs } = require('@bcgov/citz-imb-kc-express-api-docs');` or `import { apiDocs } from '@bcgov/citz-imb-kc-express-api-docs';` to the top of the file that defines the express app. Add `apiDocs(app, API_DOCS_CONFIG);` below the definition of the express app, where `app` is defined by `express()`.
 
 *Note the default config options:*
