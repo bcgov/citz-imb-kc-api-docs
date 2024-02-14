@@ -87,22 +87,31 @@ export const getRouterDetails = (
     }
 
     // Syntax: router.route(...).<method>(...)
-    // Split the file content by 'router.route', ignoring the first split as it's before the first route
-    const routeBlocks = routerFileContent.split(/router\.route/).slice(1);
+    // Normalize the content by removing multiline comments as an example
+    const normalizedContent = routerFileContent.replace(
+      /\/\*[\s\S]*?\*\//g,
+      ""
+    );
 
-    console.log(routeBlocks);
+    // Split the normalized content by 'router.route', considering potential whitespace and line breaks
+    const routeBlocks = normalizedContent.split(/\s*router\.route\s*/).slice(1);
 
-    routeBlocks.forEach((block) => {
-      // Prepend 'router.route' since we split on it
-      const fullBlock = `router.route${block}`;
+    routeBlocks.forEach((block, index) => {
+      // Prepend 'router.route' since we split on it, unless the block is empty or whitespace only
+      if (!block.trim()) return;
+
+      const fullBlock = `router.route ${block}`;
 
       // Extract the base route and the chained methods block
-      const [_, baseRoute, chainedMethods] =
-        fullBlock.match(/router\.route\(['"]([^'"]+)['"]\)([\s\S]+)/) || [];
+      const routeMatch = fullBlock.match(
+        /router\.route\s*\(\s*['"]([^'"]+)['"]\s*\)\s*([\s\S]*)/
+      );
 
-      if (!baseRoute || !chainedMethods) return; // Skip
+      if (!routeMatch) return;
 
-      // Process the chained methods as before
+      const [, baseRoute, chainedMethods] = routeMatch;
+
+      // Process the chained methods
       const methodMatchRegex = /\.(get|post|patch|put|delete)\(\s*([\w.]+)/g;
       let methodMatch;
       while ((methodMatch = methodMatchRegex.exec(chainedMethods)) !== null) {
