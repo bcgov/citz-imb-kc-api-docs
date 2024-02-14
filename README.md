@@ -118,13 +118,13 @@ const API_DOCS_CONFIG = {
       required: true,
       type: 'string',
     },
-  } as CustomSchemaConfig,
-  customControllers: {
+  },
+  customControllers: {  // This is an optional property.
     'dataController.getAllItems': {
       description: 'Returns all items.',
       // optional add query property (see TypeScript types).
     },
-  } as CustomControllersConfig,
+  },
   defaultResponses: [[503, 'An unexpected error occurred.']],
 };
 
@@ -241,7 +241,7 @@ import {
   Config, // Type for configuration options.
   CustomSchemaConfig, // Type for custom schema configuration options.
   CustomControllerConfig, // Type for custom controller configuration options.
-  QueryParamProperties, // Type for properties of query parameters.
+  ParamProperties, // Type for properties of path and query parameters.
 } from '@bcgov/citz-imb-kc-express';
 
 ```
@@ -258,13 +258,13 @@ These are the TypeScript types of the `@bcgov/citz-imb-kc-express-api-docs` modu
 const apiDocs: (app: Application, config: Config) => void;
 
 type CustomSchemaConfig = {
-    [pattern: string]: QueryParamProperties;
+    [pattern: string]: ParamProperties;
 };
 type CustomControllerConfig = {
   [controller: string]: {
     description: string;
     query?: {
-      [param: string]: QueryParamProperties;
+      [param: string]: ParamProperties;
     };
   };
 };
@@ -281,9 +281,9 @@ type Config = {
     defaultResponses: (string | number)[][];
 };
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
-type QueryParamProperties = {
+type ParamProperties = {
     required: boolean;
-    type: "string" | "number" | "boolean";
+    type: string; // "string" | "number" | "boolean"
 };
 type Endpoint = {
     route: string;
@@ -293,7 +293,7 @@ type Endpoint = {
         name: string;
         path: string;
         query?: {
-            [param: string]: QueryParamProperties;
+            [param: string]: ParamProperties;
         };
         querySchema?: z.ZodSchema<unknown>;
     };

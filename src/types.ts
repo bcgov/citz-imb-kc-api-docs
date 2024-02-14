@@ -23,14 +23,14 @@ export type IdentityProvider =
   | GithubIdentityProvider;
 
 export type CustomSchemaConfig = {
-  [pattern: string]: QueryParamProperties;
+  [pattern: string]: ParamProperties;
 };
 
 export type CustomControllerConfig = {
   [controller: string]: {
     description: string;
     query?: {
-      [param: string]: QueryParamProperties;
+      [param: string]: ParamProperties;
     };
   };
 };
@@ -51,9 +51,9 @@ export type Config = {
 
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
-export type QueryParamProperties = {
+export type ParamProperties = {
   required: boolean;
-  type: "string" | "number" | "boolean";
+  type: string;
 };
 
 export type Endpoint = {
@@ -64,7 +64,7 @@ export type Endpoint = {
     name: string;
     path: string;
     query?: {
-      [param: string]: QueryParamProperties;
+      [param: string]: ParamProperties;
     };
     querySchema?: z.ZodSchema<unknown>;
   };

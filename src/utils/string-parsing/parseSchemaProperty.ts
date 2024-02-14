@@ -1,10 +1,10 @@
-import { CustomSchemaConfig, QueryParamProperties } from "../../types";
+import { CustomSchemaConfig, ParamProperties } from "../../types";
 
 export const parseSchemaProperty = (
   schemaString: string,
   propertyName: string,
   customSchemas: CustomSchemaConfig
-): QueryParamProperties | undefined => {
+): ParamProperties | undefined => {
   // Regex to match standard zod types
   const standardPattern = new RegExp(
     `${propertyName}\\s*:\\s*z\\.(string|number|boolean)(\\(\\))?\\.?(optional)?\\(\\)?`,

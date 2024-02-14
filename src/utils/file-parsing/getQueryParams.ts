@@ -1,23 +1,23 @@
 import path from "path";
-import { QueryParamProperties } from "../../types";
+import { ParamProperties } from "../../types";
 
 /**
  * Get query params, schema name and path from a controller file content.
  * @param {string} controllerFileContent - File content to search.
  * @param {string} functionCode - Function code to search.
  * @param {string} controllerPath - Path of controller file.
- * @returns { params: Record<string, QueryParamProperties>, schemaName: string, schemaPath: string }
+ * @returns { params: Record<string, ParamProperties>, schemaName: string, schemaPath: string }
  */
 export const getQueryParams = (
   controllerFileContent: string,
   functionCode: string,
   controllerPath: string
 ): {
-  params: Record<string, QueryParamProperties>;
+  params: Record<string, ParamProperties>;
   schemaName?: string;
   schemaPath?: string;
 } => {
-  const queryParams: Record<string, QueryParamProperties> = {};
+  const queryParams: Record<string, ParamProperties> = {};
 
   // Initialize a map to hold schema names and their import paths
   const schemaPaths: { [key: string]: string } = {};
