@@ -89,6 +89,7 @@ export const getRouterDetails = (
     // Syntax: router.route(...).<method>(...)
     const routeRegex =
       /router\.route\(['"]([^'"]+)['"]\)([\s\S]+?)(?=\n\s*router\.route|$)/g;
+    match = undefined;
     while ((match = routeRegex.exec(routerFileContent)) !== null) {
       const baseRoute = match[1];
       const chainedMethods = match[2];

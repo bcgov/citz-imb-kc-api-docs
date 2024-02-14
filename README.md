@@ -19,6 +19,7 @@
 - Add minimize all button for modules
 - Describe syntax and structure requirements/limitations in README
 - Expand login to more than just IDIR
+- Check for protectedRoute on router routes
 
 <br />
 
