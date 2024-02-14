@@ -35,6 +35,14 @@ export type CustomControllerConfig = {
   };
 };
 
+export type CustomResponseStatuses = {
+  [variable: string]: number;
+};
+
+export type DefaultResponses = {
+  [statusCode: number]: string;
+};
+
 export type Config = {
   title: string;
   expressFilePath: string;
@@ -46,7 +54,8 @@ export type Config = {
   };
   customSchemas?: CustomSchemaConfig;
   customControllers?: CustomControllerConfig;
-  defaultResponses: (string | number)[][];
+  customResponseStatuses?: CustomResponseStatuses;
+  defaultResponses?: DefaultResponses;
 };
 
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";

@@ -97,7 +97,6 @@ const DefaultAPIDocsConfig = {
   expressFilePath: "src/express.ts",
   modulesBasePath: "src/modules",
   modules: {},
-  defaultResponses: [],
 };
 ```
 
@@ -125,7 +124,24 @@ const API_DOCS_CONFIG = {
       // optional add query property (see TypeScript types).
     },
   },
-  defaultResponses: [[503, 'An unexpected error occurred.']],
+  customResponseStatuses: { // This is an optional property.
+    'statusCode.OK': 200,
+    'statusCode.CREATED': 201,
+    'statusCode.ACCEPTED': 202,
+    'statusCode.NO_CONTENT': 204,
+    'statusCode.NOT_MODIFIED': 304,
+    'statusCode.BAD_REQUEST': 400,
+    'statusCode.UNAUTHORIZED': 401,
+    'statusCode.FORBIDDEN': 403,
+    'statusCode.NOT_FOUND': 404,
+    'statusCode.IM_A_TEAPOT': 418,
+    'statusCode.INTERNAL_SERVER_ERROR': 500,
+    'statusCode.NOT_IMPLEMENTED': 501,
+    'statusCode.SERVICE_UNAVAIBLABLE': 503,
+  },
+  defaultResponses: { // This is an optional property.
+    500: 'An unexpected error occurred.',
+  },
 };
 
 // Define Express App
@@ -170,7 +186,6 @@ VERBOSE_DEBUG= # (optional) Set to 'true' to get extra details from DEBUG.
 |   |   └── dep-report.json5                # Configure options for NPM Dep Report.
 |   ├── helpers/
 |   |   ├── github-api/                     # Functions to access the GitHub API.
-|   |   ├── bump-version.js                 # Bumps package.json version.
 |   |   ├── create-npm-dep-report-issues.js # Creates GitHub Issues for Npm Dep Reports.
 |   |   ├── create-npm-dep-report.js        # Creates text bodies for Npm Dep Reports.
 |   |   ├── parse-json5-config.js           # Parses json5 files for GitHub actions output.
@@ -178,7 +193,11 @@ VERBOSE_DEBUG= # (optional) Set to 'true' to get extra details from DEBUG.
 |   ├── workflows/
 |   |   ├── npm-dep-report.yaml             # Reports on new package versions.
 |   |   └── releases.yaml                   # Creates a new GitHub Release.
+├── .husky/
+|   └── post-commit                         # Script that runs after a git commit.
 ├── scripts/
+|   ├── bump-version.mjs                    # Bumps version in package.json file.
+|   ├── post-commit-version-change.mjs      # Bumps version when post-commit is run.
 |   ├── remove-dts-files.mjs                # Removes TypeScript declaration files from the build.
 |   └── remove-empty-dirs.mjs               # Removes empty directories from the build.
 ├── src/                                    # Source code for package.
@@ -188,6 +207,7 @@ VERBOSE_DEBUG= # (optional) Set to 'true' to get extra details from DEBUG.
 |   ├── index.ts                            # Export functions for the package.
 |   └── types.ts                            # TypeScript types.
 ├── package.json                            # Package config and dependencies.
+├── .npmrc                                  # NPM config.
 ├── rollup.config.mjs                       # Builds and compiles TypeScript files into JavaScript.
 ├── rollupdts.config.mjs                    # Builds and compiles TypeScript declartion files.
 ```
@@ -239,9 +259,6 @@ import {
 // TypeScript Types:
 import {
   Config, // Type for configuration options.
-  CustomSchemaConfig, // Type for custom schema configuration options.
-  CustomControllerConfig, // Type for custom controller configuration options.
-  ParamProperties, // Type for properties of path and query parameters.
 } from '@bcgov/citz-imb-kc-express';
 
 ```
@@ -268,17 +285,25 @@ type CustomControllerConfig = {
     };
   };
 };
+type CustomResponseStatuses = {
+  [variable: string]: number;
+};
+type DefaultResponses = {
+  [statusCode: number]: string;
+};
 type Config = {
-    title: string;
-    expressFilePath: string;
-    modulesBasePath: string;
-    modules: {
-        [module: string]: {
-            description: string;
-        };
+  title: string;
+  expressFilePath: string;
+  modulesBasePath: string;
+  modules: {
+    [module: string]: {
+      description: string;
     };
-    customSchemas?: CustomSchemaConfig;
-    defaultResponses: (string | number)[][];
+  };
+  customSchemas?: CustomSchemaConfig;
+  customControllers?: CustomControllerConfig;
+  customResponseStatuses?: CustomResponseStatuses;
+  defaultResponses?: DefaultResponses;
 };
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 type ParamProperties = {

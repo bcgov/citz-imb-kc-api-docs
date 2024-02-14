@@ -10,7 +10,6 @@ const DefaultAPIDocsConfig = {
   expressFilePath: "src/express.ts",
   modulesBasePath: "src/modules",
   modules: {},
-  defaultResponses: [],
 };
 
 export const apiDocs = (app: Application, config: Partial<Config>) => {
