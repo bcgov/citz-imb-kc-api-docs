@@ -1,12 +1,12 @@
 import fs from "fs";
-import { CustomSchemaConfig, QueryParamProperties } from "../../types";
+import { CustomSchemaConfig, ParamProperties } from "../../types";
 import { parseSchemaProperty } from "../string-parsing/parseSchemaProperty";
 import { getSchemaCode } from "./getSchemaCode";
 import { getZodObjectProperties } from "../string-parsing/getZodObjectProperties";
 
 export const parseSchema = (
   query: {
-    params: Record<string, QueryParamProperties>;
+    params: Record<string, ParamProperties>;
     schemaName?: string;
     schemaPath?: string;
   },
@@ -20,7 +20,7 @@ export const parseSchema = (
   const schema = getSchemaCode(schemaFileContent, query.schemaName);
 
   let params: {
-    [param: string]: QueryParamProperties;
+    [param: string]: ParamProperties;
   } = {};
 
   // If queryParams is empty but schemaName and schemaPath are provided,
