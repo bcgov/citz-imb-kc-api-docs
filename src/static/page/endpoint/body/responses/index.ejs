@@ -6,13 +6,20 @@
 
   <!-- Section Body -->
   <div class="endpoint-block-details-section-container">
+    <!-- Response from Execute -->
     <div class="execution-response" style="display: none;" id="execute-response-<%= moduleName %>-<%= index %>">
       <h4 class="font-small" style="margin-top: 0;">Response</h4>
-      <p class="font-small">Status Code: <b class="execute-response-status-code" id="execute-response-status-code-<%= moduleName %>-<%= index %>"></b></p>
+      <p class="font-small">Status Code: <b id="execute-response-status-code-<%= moduleName %>-<%= index %>"></b></p>
       <p class="font-small">Response Body:</p>
 <pre class="execution-response-body">
 <code id="execute-response-body-code-<%= moduleName %>-<%= index %>" class="language-json" style="white-space: pre;"></code>
 </pre>
     </div>
+
+    <!-- Status Codes -->
+    <% var statusCodes = endpoint.responseStatusCodes; %>
+    <% if (statusCodes) { %>
+      <p class="font-small">Possible Status Codes: <b><%= statusCodes.join(", ") %></b></p>
+    <% } %>
   </div>
 </div>

@@ -19,6 +19,7 @@
 - Describe syntax and structure requirements/limitations in README
 - Expand login to more than just IDIR
 - Check for protectedRoute on router routes
+- Check for describe in zod schema to add to params
 
 <br />
 
@@ -139,9 +140,7 @@ const API_DOCS_CONFIG = {
     'statusCode.NOT_IMPLEMENTED': 501,
     'statusCode.SERVICE_UNAVAIBLABLE': 503,
   },
-  defaultResponses: { // This is an optional property.
-    500: 'An unexpected error occurred.',
-  },
+  defaultResponses: [500], // This is an optional property.
 };
 
 // Define Express App
@@ -288,9 +287,6 @@ type CustomControllerConfig = {
 type CustomResponseStatuses = {
   [variable: string]: number;
 };
-type DefaultResponses = {
-  [statusCode: number]: string;
-};
 type Config = {
   title: string;
   expressFilePath: string;
@@ -303,7 +299,7 @@ type Config = {
   customSchemas?: CustomSchemaConfig;
   customControllers?: CustomControllerConfig;
   customResponseStatuses?: CustomResponseStatuses;
-  defaultResponses?: DefaultResponses;
+  defaultResponses?: number[];
 };
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 type ParamProperties = {
@@ -324,6 +320,7 @@ type Endpoint = {
           [param: string]: ParamProperties;
         };
     };
+    responseStatusCodes?: number[];
 };
 type Modules = {
     [key: string]: {

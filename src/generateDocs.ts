@@ -11,6 +11,8 @@ export const generateDocs = (config: Config) => {
     modulesBasePath,
     customSchemas,
     customControllers,
+    customResponseStatuses,
+    defaultResponses,
     modules,
   } = config;
 
@@ -31,7 +33,12 @@ export const generateDocs = (config: Config) => {
   );
 
   // Add controller details
-  moduleDetails = getControllerDetails(moduleDetails, customSchemas ?? {});
+  moduleDetails = getControllerDetails(
+    moduleDetails,
+    customSchemas ?? {},
+    customResponseStatuses ?? {},
+    defaultResponses ?? []
+  );
 
   return moduleDetails;
 };

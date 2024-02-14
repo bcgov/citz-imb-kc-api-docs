@@ -1,5 +1,5 @@
 import fs from "fs";
-import { CustomSchemaConfig, Modules } from "../types";
+import { CustomResponseStatuses, CustomSchemaConfig, Modules } from "../types";
 import {
   parseSchema,
   getFunctionCode,
@@ -7,11 +7,13 @@ import {
   getQueryParams,
   getPathParams,
 } from "./file-parsing";
-import { getCommentText } from "./string-parsing";
+import { getCommentText, getStatusCodes } from "./string-parsing";
 
 export const getControllerDetails = (
   modules: Modules,
-  customSchemas: CustomSchemaConfig
+  customSchemas: CustomSchemaConfig,
+  customResponseStatuses: CustomResponseStatuses,
+  defaultResponses: number[]
 ) => {
   Object.keys(modules).forEach((module) => {
     // For each endpoint in a module
@@ -68,6 +70,18 @@ export const getControllerDetails = (
         } else {
           modules[module].endpoints[index].controller.query = query.params;
         }
+
+        // Set response status codes
+        const controllerStatusCodes = getStatusCodes(
+          functionCode,
+          customResponseStatuses
+        );
+        const responseStatusCodes = [
+          ...controllerStatusCodes,
+          ...defaultResponses,
+        ];
+        modules[module].endpoints[index].responseStatusCodes =
+          responseStatusCodes;
       }
     });
   });

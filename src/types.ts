@@ -39,10 +39,6 @@ export type CustomResponseStatuses = {
   [variable: string]: number;
 };
 
-export type DefaultResponses = {
-  [statusCode: number]: string;
-};
-
 export type Config = {
   title: string;
   expressFilePath: string;
@@ -55,7 +51,7 @@ export type Config = {
   customSchemas?: CustomSchemaConfig;
   customControllers?: CustomControllerConfig;
   customResponseStatuses?: CustomResponseStatuses;
-  defaultResponses?: DefaultResponses;
+  defaultResponses?: number[];
 };
 
 export type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
@@ -79,6 +75,7 @@ export type Endpoint = {
       [param: string]: ParamProperties;
     };
   };
+  responseStatusCodes?: number[];
 };
 
 export type Modules = {

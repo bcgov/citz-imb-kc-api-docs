@@ -68,6 +68,11 @@
   color: #636363;
 }
 
+.no-params-text {
+  color: #636363;
+  margin-bottom: 30px;
+}
+
 .required-param {
   color: #bc1f1f;
 }
