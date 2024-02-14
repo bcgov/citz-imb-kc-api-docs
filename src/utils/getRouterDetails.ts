@@ -87,35 +87,28 @@ export const getRouterDetails = (
     }
 
     // Syntax: router.route(...).<method>(...)
-    const routeRegex =
-      /router\.route\(['"]([^'"]+)['"]\)([\s\S]+?)(?=\n\s*router\.route|$)/g;
-    match = undefined;
-    while ((match = routeRegex.exec(routerFileContent)) !== null) {
-      const baseRoute = match[1];
-      const chainedMethods = match[2];
+    // Split the file content by 'router.route', ignoring the first split as it's before the first route
+    const routeBlocks = routerFileContent.split(/router\.route/).slice(1);
 
+    routeBlocks.forEach((block) => {
+      // Prepend 'router.route' since we split on it
+      const fullBlock = `router.route${block}`;
+
+      // Extract the base route and the chained methods block
+      const [_, baseRoute, chainedMethods] =
+        fullBlock.match(/router\.route\(['"]([^'"]+)['"]\)([\s\S]+)/) || [];
+
+      if (!baseRoute || !chainedMethods) return; // Skip
+
+      // Process the chained methods as before
       const methodMatchRegex = /\.(get|post|patch|put|delete)\(\s*([\w.]+)/g;
       let methodMatch;
-
       while ((methodMatch = methodMatchRegex.exec(chainedMethods)) !== null) {
         const [_, httpMethod, controllerName] = methodMatch;
 
         // Determine if the controllerName is in the customControllers list
         const isCustomController =
           customControllerNames.includes(controllerName);
-
-        // If controllerName is a custom controller, use the customControllers config
-        // Otherwise, use the default logic to determine the controller path
-        const controllerConfig = isCustomController
-          ? {
-              name: controllerName,
-              path: "",
-              query: customControllers[controllerName]?.query ?? {},
-            }
-          : {
-              name: controllerName,
-              path: getControllerPath(controllerName),
-            };
 
         // Push the endpoint configuration for this method
         modules[module].endpoints.push({
@@ -124,10 +117,16 @@ export const getRouterDetails = (
           description: isCustomController
             ? customControllers[controllerName].description
             : "",
-          controller: controllerConfig,
+          controller: {
+            name: controllerName,
+            path: isCustomController ? "" : getControllerPath(controllerName),
+            query: isCustomController
+              ? customControllers[controllerName]?.query ?? {}
+              : {},
+          },
         });
       }
-    }
+    });
   });
 
   return modules;
