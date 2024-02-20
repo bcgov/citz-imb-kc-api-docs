@@ -5,10 +5,10 @@ export const parseSchemaProperty = (
   propertyName: string,
   customSchemas: CustomSchemaConfig
 ): ParamProperties | undefined => {
-  // Remove newline and spaces for easier parsing
-  const schemaStringNormalized = schemaString
-    .replace(/[\r\n]+/g, " ")
-    .replaceAll(" ", "");
+  // Remove newlines for easier parsing
+  let schemaStringNormalized = schemaString.replace(/[\r\n]+/g, "");
+  // Remove leading, trailing, and consecutive spaces while preserving single spaces between words
+  schemaStringNormalized = schemaStringNormalized.replace(/\s+/g, " ").trim();
 
   // Regular expression to match the pattern: propertyName:<capturedString>,
   const pattern = new RegExp(`${propertyName}:([^,]+)`);
@@ -17,7 +17,11 @@ export const parseSchemaProperty = (
   // If a match is found, the captured group (1) contains the desired string
   if (match && match[1]) {
     const paramDetails = match[1];
-    let param: ParamProperties = { required: true, type: "string" };
+    let param: ParamProperties = {
+      required: true,
+      type: "string",
+      description: "",
+    };
 
     // Check if custom schema is used
     for (const pattern in customSchemas) {
@@ -33,10 +37,12 @@ export const parseSchemaProperty = (
     if (paramDetails.includes(".boolean")) param.type = "boolean";
 
     // Check describe
-    const describePattern = /\.describe\(`([^`]*)`\)/;
+    const describePattern = /\.describe\((`([^`]*)`|'([^']*)'|"([^"]*)")\)/;
     const describeMatch = paramDetails.match(describePattern);
-    // If a match is found, the captured group (1) contains the description text
-    if (describeMatch && describeMatch[1]) param.description = describeMatch[1];
+    // If a match is found, the captured group for the correct quote type contains the description text
+    if (describeMatch)
+      param.description =
+        describeMatch[2] || describeMatch[3] || describeMatch[4];
 
     return param;
   }

@@ -93,6 +93,8 @@
 - Modules must be defined as a base route in express file such as `health` module as `app.use('/health', router);`
 - Each module must have a single `router.ts` file (controllers can be in separate files).
 - Use of module type `imports` instead of commonjs type `require`.
+- Schemas used in getParams, getQuery, and getBody must be imported to controller files from another file.
+- Controller functions must have a description in the form of a single or multi-line comment above them. For multi-line comments, the first line of text will be taken as the description.
 
 1. Add import `const { apiDocs } = require('@bcgov/citz-imb-kc-express-api-docs');` or `import { apiDocs } from '@bcgov/citz-imb-kc-express-api-docs';` to the top of the file that defines the express app. Add `apiDocs(app, API_DOCS_CONFIG);` below the definition of the express app, where `app` is defined by `express()`.
 

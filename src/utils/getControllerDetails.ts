@@ -48,11 +48,12 @@ export const getControllerDetails = (
         // Set path properties on controller data
         if (pathParams.schemaName && pathParams.schemaPath) {
           const params = parseSchema(pathParams, customSchemas);
-          if (params)
+          if (params) {
             modules[module].endpoints[index].controller.pathParams = params;
-        } else {
-          modules[module].endpoints[index].controller.pathParams =
-            pathParams.params;
+          } else {
+            modules[module].endpoints[index].controller.pathParams =
+              pathParams.params;
+          }
         }
 
         // Get query params
@@ -65,10 +66,11 @@ export const getControllerDetails = (
         // Set query properties on controller data
         if (query.schemaName && query.schemaPath) {
           const params = parseSchema(query, customSchemas);
-          if (params)
+          if (params) {
             modules[module].endpoints[index].controller.query = params;
-        } else {
-          modules[module].endpoints[index].controller.query = query.params;
+          } else {
+            modules[module].endpoints[index].controller.query = query.params;
+          }
         }
 
         // Set response status codes

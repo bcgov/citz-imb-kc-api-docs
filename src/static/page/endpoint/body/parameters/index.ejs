@@ -22,9 +22,21 @@
       <% Object.entries(routePathParams).forEach(function([paramName, paramDetails]) { %>
         <!-- Summary: Required and Type -->
         <% if(paramDetails.required) { %>
-          <p class="param-text font-small">(path param) <%= paramDetails.type %> <span class="required-param">* required</span></p>
+          <!-- Required -->
+          <% if (paramDetails.description && paramDetails.description !== "") { %>
+            <!-- Description included -->
+            <p class="font-small"><span class="param-text">(path param) <%= paramDetails.type %> <span class="required-param">* required</span></span><span> - <%= paramDetails.description %></span></p>
+          <% } else { %>
+            <p class="font-small"><span class="param-text">(path param) <%= paramDetails.type %> <span class="required-param">* required</span></span></p>
+          <% } %>
         <% } else { %>
-          <p class="param-text font-small">(path param) <%= paramDetails.type %> <span class="required-param">optional</span></p>
+          <!-- Optional -->
+          <% if (paramDetails.description && paramDetails.description !== "") { %>
+            <!-- Description included -->
+            <p class="font-small"><span class="param-text">(path param) <%= paramDetails.type %> <span class="required-param">optional</span></span><span> - <%= paramDetails.description %></span></p>
+          <% } else { %>
+            <p class="font-small"><span class="param-text">(path param) <%= paramDetails.type %> <span class="required-param">optional</span></span></p>
+          <% } %>
         <% } %>
 
         <!-- Input -->
@@ -39,9 +51,21 @@
       <% Object.entries(routeQueryParams).forEach(function([paramName, paramDetails]) { %>
         <!-- Summary: Required and Type -->
         <% if(paramDetails.required) { %>
-          <p class="param-text font-small">(query param) <%= paramDetails.type %> <span class="required-param">* required</span></p>
+          <!-- Required -->
+          <% if (paramDetails.description && paramDetails.description !== "") { %>
+            <!-- Description included -->
+            <p class="font-small"><span class="param-text">(query param) <%= paramDetails.type %> <span class="required-param">* required</span></span><span> - <%= paramDetails.description %></span></p>
+          <% } else { %>
+            <p class="font-small"><span class="param-text">(query param) <%= paramDetails.type %> <span class="required-param">* required</span></span></p>
+          <% } %>
         <% } else { %>
-          <p class="param-text font-small">(query param) <%= paramDetails.type %> <span class="required-param">optional</span></p>
+          <!-- Optional -->
+          <% if (paramDetails.description && paramDetails.description !== "") { %>
+            <!-- Description included -->
+            <p class="font-small"><span class="param-text">(query param) <%= paramDetails.type %> <span class="required-param">optional</span></span><span> - <%= paramDetails.description %></span></p>
+          <% } else { %>
+            <p class="font-small"><span class="param-text">(query param) <%= paramDetails.type %> <span class="required-param">optional</span></span></p>
+          <% } %>
         <% } %>
 
         <!-- Input -->
